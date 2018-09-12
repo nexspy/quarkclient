@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/timer.css">
+  </head>
+  <body>
+    
+
+    <div class="top-bar">
+      Quark Softwares
+    </div>
+
+    <div class="content">
+      <div class="body">
+        <div class="timer">00:00:00</div>
+        <div class="login-time">Logged In @</div>
+        <div class="advertisements">
+          <!-- Ad will appear here!! -->
+        </div>
+      </div>
+
+      <div class="bottom">
+        <div id="balance" style="display:none;">0</div>
+
+        <div id="message"></div>
+
+        <div id="user-balance"></div>
+        
+
+        <div id="logout">
+            <button id="btn-logout" class="btn pink">Logout</button>
+        </div>
+      </div>
+    </div>
+
+
+    <script>
+        window.$ = window.jQuery = require("../plugins/jquery/jquery-3.2.1.js");
+      </script>
+    <script src="timer.js"></script>
+    <script>
+      // prevent closing of window
+      window.addEventListener('beforeunload', function (event) {
+        event.returnValue = false;
+      });
+    </script>
+  </body>
+</html>

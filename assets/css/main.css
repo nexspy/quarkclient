@@ -1,0 +1,101 @@
+html {
+    height: 100%;
+}
+body {
+    padding:20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+body, a {
+    height: 100%;
+    overflow:hidden;
+    background: url('../images/wallpaper.jpg');
+    object-fit: fill;
+
+    color: white;
+}
+
+body {
+    overflow-y: hidden ! important;
+    overflow-x: hidden ! important;
+    background-color: #16191e;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+div.form-box input {
+    padding: 10px;
+    clear: both;
+}
+div.form-box input.btn.night-btn {
+    background-color: #d27400;
+    border-color: #d27400;
+}
+div.form-box input.btn.night-btn:hover {
+    color: black;
+}
+div.form-box .form-item {
+    margin: 5px 0px;
+}
+
+
+.copyright {
+    position: absolute;
+    bottom: 5px;
+    right: 12px;
+}
+
+
+
+.timer {
+    font-size: 22px;
+}
+
+.form-part {
+    margin-bottom: 40px;
+}
+
+
+
+
+
+.btn {
+    background-color: #55acef;
+    border: 1px solid #55acef;
+    color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+  }
+  .btn:hover {
+    background-color: white;
+    color: #55acef;
+    cursor: pointer;
+  }
+  .btn.pink {
+    background-color: #ff5252;
+    border-color: #ff5252;
+  }
+  .btn.pink:hover {
+    background-color: white;
+    color: #ff5252;
+  }
+  .btn:disabled,
+  .btn:disabled:hover {
+    background-color: #CCC;
+    color: white;
+    border-color: #CCC;
+  }
+  
+
+  #controls {
+      /* opacity: 0; */
+      position: absolute;
+      right: 15px;
+  }
+  #controls button {
+      display: none;
+  }

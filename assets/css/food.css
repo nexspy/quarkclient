@@ -1,0 +1,35 @@
+body {
+    background-color: #dbdbdb;
+    background-image: none;
+    color: black;
+}
+
+.container {
+	width: 960px;
+	margin: 0px auto;
+	/*border: 1px solid red;*/
+}
+
+.top-bar {
+	margin-bottom: 10px;
+}
+.food-slider {
+	width: 100%;
+}
+
+.flexslider {
+	background: none;
+	border: none;
+}
+
+
+
+.content .tab-left {
+	float: left;
+	width: 80%;
+}
+.content .tab-right {
+	float: left;
+	width: 18%;
+	margin: 10px 8px;
+}

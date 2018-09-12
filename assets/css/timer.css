@@ -1,0 +1,50 @@
+p.notify {
+    background: #C3C3C3;
+    margin: 0;
+    padding: 20px;
+    text-transform: uppercase;
+    -webkit-app-region: drag;
+}
+
+html, body {
+    background: #1c2127;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    color: #55aaff;
+}
+.active {
+    color: white;
+}
+
+.top-bar {
+    background-color: #161a1f;
+    padding: 12px 30px;
+    height: 20px;
+}
+.top-bar,
+.content {
+    padding: 12px;
+}
+
+.bottom {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    padding: 10px;
+}
+
+.advertisements {
+    padding: 4px;
+    min-height: 300px;
+    background-color: #161a1f;
+}
+
+.timer {
+    font-size: 54px;
+    color: white;
+}
+
+.login-time, .username {
+    padding: 12px 8px;
+}

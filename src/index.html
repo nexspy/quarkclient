@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+  </head>
+  <body>
+    <!-- <div id="controls">
+        <input type="checkbox" id="dev_mode" name="dev_mode" value="dev_mode">
+        <label for="dev_mode">Developer Mode</label>
+        <button id="btn_reset" class="btn pink">Reset Application</button>
+    </div> -->
+
+    <div class="row">
+      
+      <div class="registration form-box" style="display: none;">
+        <div class="form-item">
+          Enter Base Key
+        </div>
+        <div class="form-item">
+          <label for="">http://</label>
+          <input type="text" id="txt_basekey" placeholder="BaseKey">
+        </div>
+        <div class="form-item">
+          Enter your 16 digit registration code
+        </div>
+        <div class="form-item">
+          <input type="text" id="txt_code" placeholder="XXXXXXXXXXXXXXXX">
+        </div>
+        <div class="form-item">
+          <button id="register" class="btn">Register</button>
+        </div>
+        <div id="registration-message"></div>
+      </div>
+
+      <div class="login-form form-box">
+
+        <div id="form-wrapper" style="display: none;">
+          <div class="form-part" style="display:none;">
+            <button class="btn" id="btn_request">Request Login</button>
+          </div>
+          
+          <div class="form-item" >
+            <input class="btn night-btn" type="submit" value="Night Mode" style="display: none;">
+          </div>
+
+          <div class="form-part">
+              <p>Member Login</p>
+              <div class="form-item">
+                  <input type="text" placeholder="USERNAME" id="txt_username">
+              </div>
+              <div class="form-item">
+                  <input type="password" placeholder="PASSWORD" id="txt_password">
+              </div>
+              <div class="form-item">
+                  <input class="btn" type="submit" id="user_login" value="Login">
+              </div>
+              <div class="form-item">
+                  <div id="message"></div>
+              </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="copyright">Powered By Quark Software</div>
+
+
+    <script>
+      window.$ = window.jQuery = require("../plugins/jquery/jquery-3.2.1.js");
+    </script>
+    <script src="index.js"></script>
+  </body>
+</html>
