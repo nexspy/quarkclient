@@ -4,6 +4,7 @@ const BrowserWindow = electron.remote.BrowserWindow
 const axios = require('axios')
 const remote = electron.remote
 const shutdown = require('electron-shutdown-command');
+var log = require('electron-log');
 
 // ipc that sends message to main.js
 const ipc = electron.ipcRenderer
@@ -100,13 +101,19 @@ function sync_server() {
                     reserved_time = balance*60; 
                 }
             }
-
+            
             // update timer according to fetched remaining time
             display_time(result);
             
             // show warning
             if (result.remaining <= 5*60 && !warning_shown) {
                 show_warning();
+            }
+
+            // time to turn off
+            if (result.remaining <= 0) {
+                log.info('time has run out');
+                request_logout(false);
             }
             
             // non-member should be automatically logged out
@@ -127,6 +134,8 @@ function sync_server() {
  * Logout user and shutdown, all user related data is reset
  */
 function request_logout(button) {
+    log.info('logging out...');
+
     if (button) {
         button.prop('disabled', true);
     }
@@ -162,13 +171,13 @@ function request_logout(button) {
                 store.delete('user_balance');
                 store.delete('user_id');
                 store.delete('ready_to_close');
-                openMainWindow();
+                shutdownComputer();
             } else {
                 store.delete('username');
                 store.delete('user_balance');
                 store.delete('user_id');
                 store.delete('ready_to_close');
-                openMainWindow();
+                shutdownComputer();
                 console.log('something went wrong');
             }
             
@@ -184,15 +193,15 @@ function request_logout(button) {
 /**
  * Open the main lockscreen window
  */
-function openMainWindow() {
+function shutdownComputer() {
     
     store.delete('ready_to_close');
 
-    console.log('computer will now shutdown...');
+    log.info('computer will now shutdown...');
 
     stop_sync = true;
 
-    console.log('shutdown');
+    log.info('shutdown');
     // shutdown.shutdown();
 
     return;
@@ -280,6 +289,7 @@ function show_ad() {
         resizable: false,
         movable: false,
         minimizable: false,
+        icon: __dirname + '/logo.ico',
     });
     
     // prevent closing of window
@@ -298,6 +308,7 @@ function show_ad() {
  * Show popup window
  */
 function show_warning() {
+    log.info('show warning...');
     warning_shown = true;
     const modalPath = path.join('file://', __dirname, 'warning.html')
     var dimen = getWidowDimensions();
@@ -313,6 +324,7 @@ function show_warning() {
         resizable: false,
         movable: false,
         minimizable: false,
+        icon: __dirname + '/logo.ico',
     })
     
     // prevent closing of window

@@ -214,6 +214,7 @@ function openTimerWindow() {
         resizable: false,
         movable: false,
         minimizable: false,
+        icon: __dirname + '/logo.ico',
     })
     
     // win.on('close', function() {
@@ -295,8 +296,6 @@ function request_access() {
  * @param {*string} password 
  */
 function request_login(username, password) {
-    openTimerWindow();
-    return;
     var pass = false;
     var registration_code = store.get('registration_code');
 
@@ -334,7 +333,7 @@ function request_login(username, password) {
                 txt_pass.val('');
                 
             } else {
-                console.log('username or password was wrong');
+                console.log(msg);
                 var msg = response.data.message;
                 $("#message").html(msg);
                 txt_pass.val('');

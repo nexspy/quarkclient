@@ -1,4 +1,6 @@
-const {app, BrowserWindow, Menu, Notification} = require('electron')
+const {app, BrowserWindow, Menu, ipcMain, Notification} = require('electron')
+// const {autoUpdater} = require("electron-updater");
+var log = require('electron-log');
 const path = require('path')
 const url = require('url')
 const shell = require('electron').shell
@@ -32,14 +34,23 @@ function getWidowDimensions() {
   return dimensions;
 }
 
+// when the update has been downloaded and is ready to be installed, notify the BrowserWindow
+// autoUpdater.on('update-downloaded', (info) => {
+//   log.info('Update Downloaded');
+//   win.webContents.send('updateReady')
+// });
 
+// // when receiving a quitAndInstall signal, quit and install the new version ;)
+// ipcMain.on("quitAndInstall", (event, arg) => {
+//   autoUpdater.quitAndInstall();
+// })
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
 function createWindow () {
-  console.log("New Main Window created...");
+  log.info("New Main Window created...");
 
   var dimen = getWidowDimensions();
   
@@ -48,17 +59,19 @@ function createWindow () {
     width: dimen.width,
     height: dimen.height,
     frame: false,
-    // x: dimen.width - 240,
     x:0,
     y:0,
     resizable: false,
     movable: false,
     minimizable: false,
-})
+    fullscreen: true,
+    icon: __dirname + '/logo.ico',
+  });
 
   // and load the index.html of the app.
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'src/index.html'),
+    // pathname: path.join(__dirname, 'src/index.html'),
     // pathname: path.join(__dirname, 'src/timer.html'),
     // pathname: path.join(__dirname, 'src/food.html'),
     protocol: 'file:',
@@ -67,16 +80,14 @@ function createWindow () {
 
   // prevent closing of window
   win.on('close', function (event) {
-    // dev : uncomment these to block force 
-
     ready_to_close = store.get('ready_to_close');    
     if (!ready_to_close) {
-      // event.preventDefault();
+      event.preventDefault();
     }
   })
 
   // Open the DevTools.
-  win.webContents.openDevTools()
+  // win.webContents.openDevTools()
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -85,44 +96,16 @@ function createWindow () {
 
   // keep our application always on top
   // set_alwaysonTop();
-
-  var menu = Menu.buildFromTemplate([
-    {
-      label: 'Menu',
-      submenu: [
-        { label: 'Adjust Notification Value' },
-        {
-          label: 'CoinMarketCap',
-          click() {
-            shell.openExternal('http://modificationdharan.com')
-          }
-        },
-        { type: 'separator'},
-        {
-          label: 'Exit',
-          accelerator: 'Ctrl+L',
-          click() {
-            // win.close()
-            // app.quit();
-            reset_app();
-          }
-        },
-      ]
-    },
-    {
-      label: 'Info'
-    }
-  ])
-
-
-  Menu.setApplicationMenu(menu);
+  win.setFullScreen(true);
 
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', function() {
+  createWindow();
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
