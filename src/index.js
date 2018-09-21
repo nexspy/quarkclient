@@ -3,6 +3,7 @@ const path = require('path')
 const BrowserWindow = electron.remote.BrowserWindow
 const axios = require('axios')
 const remote = electron.remote
+var log = require('electron-log');
 
 // code to reset
 const reset_username = 'reset';
@@ -40,7 +41,6 @@ var run_mode = store.get("run_mode");
 var stop_request_login = false;
 var stop_register_btn = false;
 var nightmode = store.get('nightmode');
-
 
 
 

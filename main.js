@@ -95,7 +95,7 @@ function createWindow () {
   })
 
   // keep our application always on top
-  // set_alwaysonTop();
+  set_alwaysonTop();
   win.setFullScreen(true);
 
 }
