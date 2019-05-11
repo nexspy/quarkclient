@@ -519,7 +519,7 @@ function startup() {
     // start timer that shuts down computer after 30 seconds
     setTimeout(function(){ 
         shutdown.shutdown();
-    }, 10*1000);
+    }, 30*1000);
 }
 
 
