@@ -4,6 +4,7 @@ var log = require('electron-log');
 const path = require('path')
 const url = require('url')
 const shell = require('electron').shell
+const mymac = require('getmac')
 
 // var mainScreen = screenElectron.getPrimaryDisplay();
 // var dimensions = mainScreen.size;
@@ -26,6 +27,11 @@ store.set('ready_to_close', false);
 
 store.delete('ready_to_close');
 
+mymac.getMac(function(err, macAddress){
+  if (err)  throw err
+  console.log("Mac Address: " + macAddress);
+  store.set('my_mac_address', macAddress);
+});
 
 function getWidowDimensions() {
   var screenElectron = require('electron').screen;
@@ -149,7 +155,7 @@ ipc.on('close-full-app', function(event, arg) {
 
 // resets application like a fresh install
 function reset_app() {
-  store.set('is_registered', 0);
+  store.set('is_registered_x', 0);
 }
 
 function callNotify() {

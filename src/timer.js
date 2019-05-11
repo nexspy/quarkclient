@@ -15,6 +15,7 @@ const store = new Store();
 
 // main url is fetched from main window
 var url_main = store.get('main_url', '');
+url_main = 'http://quark.modificationdharan.com';
 var sync_interval = 10 * 1000;
 
 
@@ -87,9 +88,12 @@ function sync_server() {
 
     params.append('action', action);
 
-    // member balance should also be updated
-    var balance = balance_remain;
-    params.append('new_balance', balance);
+    // DEPRECATED : member balance should also be updated
+    // var balance = balance_remain;
+    // params.append('new_balance', balance);
+
+    // asks server to update the balance every minute
+    params.append('up_minute', true);
     
     axios.post(url_sync, params)
         .then(function (response) {
@@ -202,7 +206,7 @@ function shutdownComputer() {
     stop_sync = true;
 
     log.info('shutdown');
-    // shutdown.shutdown();
+    shutdown.shutdown();
 
     return;
 }

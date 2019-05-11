@@ -3,6 +3,7 @@ const path = require('path')
 const BrowserWindow = electron.remote.BrowserWindow
 const axios = require('axios')
 const remote = electron.remote
+const shutdown = require('electron-shutdown-command');
 var log = require('electron-log');
 
 // code to reset
@@ -13,6 +14,7 @@ const close_password = '1987';
 
 var url_status = '/machine/status';
 var url_register_code = '/machine/register';
+var url_server_mac = '/machine/install';
 var url_login = '/cyber/authenitcate';
 var url_access = '/cyber/request';
 
@@ -25,6 +27,7 @@ var btn_request = $("#btn_request");
 var btn_login = $("#user_login");
 var btn_reset= $("#btn_reset");
 var btn_register = $("#register");
+var btn_install = $("#startapp");
 var btn_nightmode = $('.night-btn');
 var txt_user = $("#txt_username");
 var txt_pass = $("#txt_password");
@@ -35,7 +38,7 @@ var controls_dev_mode = $("#controls");
 var app_basekey = store.get("app_basekey", "");
 var username_last = store.get('username');
 txt_user.val(username_last);
-var is_registered = store.get('is_registered');
+var is_registered_x = store.get('is_registered_x');
 var ready_to_close = store.get('ready_to_close');
 var run_mode = store.get("run_mode");
 var stop_request_login = false;
@@ -62,7 +65,17 @@ btn_register.click(function(e) {
 
     
     request_registration(code);
-})
+});
+
+btn_install.click(function(e) {
+    e.preventDefault();
+
+    var mac = store.get("my_mac_address", '');
+
+    if (mac.length) {
+        post_install(mac);
+    }
+});
 
 // nightmode shutsdown the software
 btn_nightmode.click(function(e) {
@@ -171,6 +184,10 @@ function getStatus() {
  * Get the main url (domain) to use
  */
 function get_main_url() {
+
+    // static website
+    return 'http://quark.modificationdharan.com';
+
     // new update uses the base key for url
     app_basekey = store.get("app_basekey", "");
     var is_url = valid_url(app_basekey);
@@ -214,7 +231,7 @@ function openTimerWindow() {
         resizable: false,
         movable: false,
         minimizable: false,
-        icon: __dirname + '/logo.ico',
+        icon: __dirname + '/../logo.ico',
     })
     
     // win.on('close', function() {
@@ -401,7 +418,7 @@ function validate_registration(code) {
                 // save registration
                 store.set('registration_code', code);
                 store.set('cyber_id', response.data.cyber_id);
-                store.set('is_registered', 1);
+                store.set('is_registered_x', 1);
                 store.set('automatic_shutdown', response.data.automatic_shutdown);
                 store.set('opening_time', response.data.opening_time);
                 store.set('closing_time', response.data.closing_time);
@@ -418,6 +435,63 @@ function validate_registration(code) {
         });
 }
 
+/**
+ * Install : send mac address to server and get registration code, this registration code is used next time.
+ * 
+ * @param {string} mac 
+ */
+function post_install(mac) {
+    if (stop_register_btn) {
+        console.log('i have to stop you')
+        return;
+    }
+    stop_register_btn = true;
+
+    // show message
+    $("#registration-message").html("Installation on progress...");
+
+    var params = new URLSearchParams();
+    params.append('xmac', mac);
+
+    var url_to_use = get_main_url();
+    
+    axios.post(url_to_use + url_server_mac, params)
+        .then(function (response) {
+
+            stop_register_btn = false;
+            
+            console.log(response.data);
+            if (response.data.success) {
+
+                var code = response.data.machine.registration_id;
+                
+                $(".form-box").hide();
+                $(".login-form").show();
+
+                // save
+                store.set('is_registered_x', 1);
+                store.set('registration_code', code);
+
+                // save registration
+                // store.set('cyber_id', response.data.cyber_id);
+                // store.set('is_registered_x', 1);
+                // store.set('automatic_shutdown', response.data.automatic_shutdown);
+                // store.set('opening_time', response.data.opening_time);
+                // store.set('closing_time', response.data.closing_time);
+
+            } else {
+                $("#registration-message").html("Wrong Registration Code");
+            }
+            
+            btn_install.prop('disabled', false);
+        })
+        .catch(function (error) {
+            console.log(error);
+            btn_install.prop('disabled', false);
+            stop_register_btn = false;
+        });
+}
+
 
 // Handle startup actions
 function startup() {
@@ -426,7 +500,7 @@ function startup() {
     
 
     // client software requires to be registered
-    if (is_registered) {
+    if (is_registered_x) {
         $(".form-box").hide();
         $(".login-form").show();
     } else {
@@ -438,11 +512,19 @@ function startup() {
 
     // check status and show night mode
     getStatus();
+
+    // change background image
+    // $('body').css('background', 'url(https://picsum.photos/id/1031/300/140) 50% 50% #16191e no-repeat');
+
+    // start timer that shuts down computer after 30 seconds
+    setTimeout(function(){ 
+        shutdown.shutdown();
+    }, 10*1000);
 }
 
 
 // reset
 function reset() {
-    is_registered = 0;
-    store.set('is_registered', 0);
+    is_registered_x = 0;
+    store.set('is_registered_x', 0);
 }
