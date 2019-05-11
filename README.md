@@ -8,6 +8,10 @@ A fresh setup file is also update to server.
 > npm run ship
 ```
 
+To start the project, we can use following command.
+```
+> npm start
+```
 
 
 

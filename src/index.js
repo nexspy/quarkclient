@@ -159,12 +159,12 @@ function getStatus() {
         .then(function (response) {
             if (response.data.success) {
                 // check to show or hide night mode
-                var opening_time = parseInt(store.get('opening_time'));
-                var closing_time = parseInt(store.get('closing_time'));
+                var opening_time = parseInt(response.data.opening_time);
+                var closing_time = parseInt(response.data.closing_time);
                 
                 var server_hour = parseInt(response.data.server_hour);
                 // night time
-                if (server_hour > 12 && server_hour > closing_time) {
+                if (server_hour > closing_time || server_hour < opening_time) {
                     btn_nightmode.show();
                     console.log('ok')
                 } else
