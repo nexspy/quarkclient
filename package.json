@@ -33,7 +33,7 @@
     "electron-log": "^2.2.16",
     "electron-shutdown-command": "0.0.7",
     "electron-store": "^1.3.0",
-    "electron-updater": "^3.0.3",
+    "electron-updater": "^4.0.0",
     "electron-windows-notifications": "^1.1.16",
     "getmac": "^1.4.6",
     "npm": "^6.4.1"
