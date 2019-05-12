@@ -5,6 +5,9 @@ const path = require('path')
 const url = require('url')
 const shell = require('electron').shell
 const mymac = require('getmac')
+// var basepath = app.getAppPath();
+var basepath = path.dirname (app.getPath ('exe'));
+var AutoLaunch = require('auto-launch')
 
 // var mainScreen = screenElectron.getPrimaryDisplay();
 // var dimensions = mainScreen.size;
@@ -104,6 +107,33 @@ function createWindow () {
   set_alwaysonTop();
   win.setFullScreen(true);
 
+  // add app to auto launch
+  start_auto_launch();
+}
+
+
+// Add application to auto launch program
+function start_auto_launch() {
+  
+  var quarkclientAutoLauncher = new AutoLaunch({
+    name: 'QuarkClient',
+    // path: '/Applications/QuarkClient.app',
+    // path: '"C:\\Users\\C9G\\AppData\\Roaming\\uTorrent Web\\utweb.exe" /MINIMIZED',
+    path: basepath + '\\quarkclient.exe',
+  });
+
+  quarkclientAutoLauncher.enable();
+
+  quarkclientAutoLauncher.isEnabled()
+  .then(function(isEnabled){
+      if(isEnabled){
+          return;
+      }
+      quarkclientAutoLauncher.enable();
+  })
+  .catch(function(err){
+      // handle error
+  });
 }
 
 // This method will be called when Electron has finished

@@ -1,6 +1,6 @@
 {
   "name": "quarkclient",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Client Application for cyber management.",
   "main": "main.js",
   "scripts": {
@@ -36,6 +36,7 @@
     "electron-updater": "^4.0.0",
     "electron-windows-notifications": "^1.1.16",
     "getmac": "^1.4.6",
-    "npm": "^6.4.1"
+    "npm": "^6.4.1",
+    "auto-launch": "^5.0.5"
   }
 }
