@@ -507,8 +507,9 @@ function startup() {
     var hours = today.getHours();
     var num = hours%6;
     if (num>=24) { num = 4; }
-    wallpaper.set('assets/wallpaper' + num + '.jpg');
-
+    var img_path = path.join(__dirname, '../assets/wallpaper' + num + '.jpg');
+    wallpaper.set(img_path);
+    
     // client software requires to be registered
     if (is_registered_x) {
         $(".form-box").hide();
@@ -528,7 +529,7 @@ function startup() {
 
     // start timer that shuts down computer after 30 seconds
     setTimeout(function(){ 
-        shutdown.shutdown();
+        // shutdown.shutdown();
     }, 30*1000);
 }
 
