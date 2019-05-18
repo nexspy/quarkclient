@@ -27,6 +27,11 @@ body {
 div.form-box input {
     padding: 10px;
     clear: both;
+    
+}
+div.form-box input[type=text],
+div.form-box input[type=password] {
+    border: 2px solid red;
 }
 div.form-box input.btn.night-btn {
     background-color: #d27400;

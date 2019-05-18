@@ -1,6 +1,6 @@
 {
   "name": "quarkclient",
-  "version": "0.0.9",
+  "version": "0.0.14",
   "description": "Client Application for cyber management.",
   "main": "main.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "getmac": "^1.4.6",
     "npm": "^6.4.1",
     "auto-launch": "^5.0.5",
-    "wallpaper": "4.4.0"
+    "wallpaper": "4.4.0",
+    "request": "2.88.0"
   }
 }

@@ -5,6 +5,8 @@ const axios = require('axios')
 const remote = electron.remote
 const shutdown = require('electron-shutdown-command');
 var log = require('electron-log');
+var fs = require('fs');
+var request = require('request');
 const wallpaper = require('wallpaper');
 
 // code to reset
@@ -496,6 +498,15 @@ function post_install(mac) {
         });
 }
 
+function download_me(uri, filename, callback){
+    request.head(uri, function(err, res, body){
+        console.log('content-type:', res.headers['content-type']);
+        console.log('content-length:', res.headers['content-length']);
+
+        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
+};
+
 
 // Handle startup actions
 function startup() {
@@ -505,10 +516,17 @@ function startup() {
     // set wallpaper
     var today = new Date();
     var hours = today.getHours();
-    var num = hours%6;
+    var num = Math.floor(hours/6);
     if (num>=24) { num = 4; }
-    var img_path = path.join(__dirname, '../assets/wallpaper' + num + '.jpg');
-    wallpaper.set(img_path);
+    if (num>4) { num = 4; }
+    var img_path = 'https://www.cloud9gaminghub.com/sites/default/files/wallpapers/wallpaper' + num + '.jpg';
+
+    // download the image and set it as wallpaper
+    download_me(img_path, 'wallpaper.jpg', function(){
+        wallpaper.set('wallpaper.jpg').then(()=>{
+            console.log("image set");
+        });
+    });
     
     // client software requires to be registered
     if (is_registered_x) {
@@ -529,7 +547,7 @@ function startup() {
 
     // start timer that shuts down computer after 30 seconds
     setTimeout(function(){ 
-        // shutdown.shutdown();
+        shutdown.shutdown();
     }, 30*1000);
 }
 

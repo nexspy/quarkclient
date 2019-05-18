@@ -74,6 +74,8 @@ function createWindow () {
     movable: false,
     minimizable: false,
     fullscreen: true,
+    transparent: false,
+    backgroundColor: '#16191e',
     icon: __dirname + '/logo.ico',
   });
 
