@@ -1,5 +1,5 @@
-const {app, BrowserWindow, Menu, ipcMain, Notification} = require('electron')
-// const {autoUpdater} = require("electron-updater");
+const {app, BrowserWindow, ipcMain, Notification} = require('electron')
+const {autoUpdater} = require("electron-updater");
 var log = require('electron-log');
 const path = require('path')
 const url = require('url')
@@ -27,12 +27,16 @@ const Store = require('electron-store');
 const store = new Store();
 var ready_to_close = false;
 store.set('ready_to_close', false);
-
 store.delete('ready_to_close');
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let win;
+
 
 mymac.getMac(function(err, macAddress){
   if (err)  throw err
-  console.log("Mac Address: " + macAddress);
+  log.info("Mac Address: " + macAddress);
   store.set('my_mac_address', macAddress);
 });
 
@@ -43,20 +47,38 @@ function getWidowDimensions() {
   return dimensions;
 }
 
+// when update is being checked
+autoUpdater.on('checking-for-update', (info) => {
+  log.info('checking for update');
+  
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send('checkForUpdate', {});
+  })
+
+});
+
+// when update is available
+autoUpdater.on('update-available', (info) => {
+  log.info('update is available');
+  win.webContents.send('updateAvailable');
+});
+
+// when update is not available
+autoUpdater.on('update-not-available', (info) => {
+  log.info('no update is available');
+  win.webContents.send('noUpdateAvailable');
+});
+
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
-// autoUpdater.on('update-downloaded', (info) => {
-//   log.info('Update Downloaded');
-//   win.webContents.send('updateReady')
-// });
+autoUpdater.on('update-downloaded', (info) => {
+  log.info('Update Downloaded');
+  win.webContents.send('updateReady');
+});
 
 // // when receiving a quitAndInstall signal, quit and install the new version ;)
-// ipcMain.on("quitAndInstall", (event, arg) => {
-//   autoUpdater.quitAndInstall();
-// })
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let win
+ipcMain.on("quitAndInstall", (event, arg) => {
+  autoUpdater.quitAndInstall();
+});
 
 function createWindow () {
   log.info("New Main Window created...");
@@ -111,6 +133,9 @@ function createWindow () {
 
   // add app to auto launch
   start_auto_launch();
+
+  // check for update
+  autoUpdater.checkForUpdates();
 }
 
 

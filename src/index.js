@@ -3,6 +3,7 @@ const path = require('path')
 const BrowserWindow = electron.remote.BrowserWindow
 const axios = require('axios')
 const remote = electron.remote
+const ipcRenderer = require('electron').ipcRenderer;
 const shutdown = require('electron-shutdown-command');
 var log = require('electron-log');
 var fs = require('fs');
@@ -32,6 +33,8 @@ var btn_reset= $("#btn_reset");
 var btn_register = $("#register");
 var btn_install = $("#startapp");
 var btn_nightmode = $('.night-btn');
+var btn_update_now = $('#btn-update-now');
+var btn_update = $('.btn-update-app');
 var txt_user = $("#txt_username");
 var txt_pass = $("#txt_password");
 var txt_all = $("#txt_username, #txt_password");
@@ -52,6 +55,40 @@ var nightmode = store.get('nightmode');
 
 // 
 startup();
+
+// wait for an checkForUpdate message
+ipcRenderer.on('checkForUpdate', function(event, text) {
+    // changes the text of the button
+    btn_update.text('checking for update...');
+});
+
+// wait for an updateAvailable message
+ipcRenderer.on('updateAvailable', function(event, text) {
+    // changes the text of the button
+    btn_update.text('update found!');
+    btn_update_now.show();
+});
+
+// wait for an noUpdateAvailable message
+ipcRenderer.on('noUpdateAvailable', function(event, text) {
+    // changes the text of the button
+    btn_update.text('no updates found!');
+});
+
+// wait for an updateReady message
+ipcRenderer.on('updateReady', function(event, text) {
+    // changes the text of the button
+    btn_update.text('update download completed and ready to install!!!!');
+});
+
+// update now
+btn_update_now.click(function(e) {
+    e.preventDefault();
+
+    ipcRenderer.send('quitAndInstall');
+    $(this).hide();
+});
+
 
 body.click(function() {
     $("#form-wrapper").show();
@@ -89,8 +126,7 @@ btn_nightmode.click(function(e) {
 
     var window = remote.getCurrentWindow();
     window.close();
-})
-
+});
 
 // request to login
 btn_login.click(function(e) {
@@ -549,6 +585,10 @@ function startup() {
     setTimeout(function(){ 
         shutdown.shutdown();
     }, 30*1000);
+
+
+    var appVersion = require('electron').remote.app.getVersion();
+    $('.appversion').text(appVersion);
 }
 
 
