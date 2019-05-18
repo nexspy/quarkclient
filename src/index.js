@@ -50,7 +50,9 @@ var run_mode = store.get("run_mode");
 var stop_request_login = false;
 var stop_register_btn = false;
 var nightmode = store.get('nightmode');
-
+// use this flag to see for application being updated.
+var stt = 'normal';
+var update_count = 0;
 
 
 // 
@@ -64,9 +66,13 @@ ipcRenderer.on('checkForUpdate', function(event, text) {
 
 // wait for an updateAvailable message
 ipcRenderer.on('updateAvailable', function(event, text) {
+    update_count++;
+
     // changes the text of the button
     btn_update.text('update found!');
-    btn_update_now.show();
+
+    // block shutting down
+    store.set('app_status', 'updating');
 });
 
 // wait for an noUpdateAvailable message
@@ -75,10 +81,21 @@ ipcRenderer.on('noUpdateAvailable', function(event, text) {
     btn_update.text('no updates found!');
 });
 
-// wait for an updateReady message
-ipcRenderer.on('updateReady', function(event, text) {
+// update download progress
+ipcRenderer.on('update_progress', function(event, message) {
+    // var width = $("#progress-update").width();
+    // var percentage = parseInt(percentage);
+    // var new_width = (percentage/100) * width;
+    // progress_bar.width(new_width);
+    btn_update.text(message);
+});
+
+// wait for an updateDownloaded message
+ipcRenderer.on('updateDownloaded', function(event, text) {
+    update_count++;
     // changes the text of the button
     btn_update.text('update download completed and ready to install!!!!');
+    btn_update_now.show();
 });
 
 // update now
@@ -583,12 +600,15 @@ function startup() {
 
     // start timer that shuts down computer after 30 seconds
     setTimeout(function(){ 
-        shutdown.shutdown();
-    }, 30*1000);
+        // stt = store.get('app_status');
+        // if (stt !== 'updating') {
+            shutdown.shutdown();
+        // }
+    }, 45*1000);
 
 
     var appVersion = require('electron').remote.app.getVersion();
-    $('.appversion').text(appVersion);
+    $('.appversion').text('version ' + appVersion);
 }
 
 

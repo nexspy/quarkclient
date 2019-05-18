@@ -69,10 +69,21 @@ autoUpdater.on('update-not-available', (info) => {
   win.webContents.send('noUpdateAvailable');
 });
 
+// download progress
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+
+  log.info(log_message);
+  
+  win.webContents.send('update_progress', log_message );
+});
+
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
 autoUpdater.on('update-downloaded', (info) => {
   log.info('Update Downloaded');
-  win.webContents.send('updateReady');
+  win.webContents.send('updateDownloaded');
 });
 
 // // when receiving a quitAndInstall signal, quit and install the new version ;)
