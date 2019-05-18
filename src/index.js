@@ -5,6 +5,7 @@ const axios = require('axios')
 const remote = electron.remote
 const shutdown = require('electron-shutdown-command');
 var log = require('electron-log');
+const wallpaper = require('wallpaper');
 
 // code to reset
 const reset_username = 'reset';
@@ -80,6 +81,9 @@ btn_install.click(function(e) {
 // nightmode shutsdown the software
 btn_nightmode.click(function(e) {
     e.preventDefault();
+
+    // ready to close must be set
+    store.set('ready_to_close', true);
 
     var window = remote.getCurrentWindow();
     window.close();
@@ -497,7 +501,13 @@ function post_install(mac) {
 function startup() {
     $(".form-box").hide();
     $(".registration").show();
-    
+
+    // set wallpaper
+    var today = new Date();
+    var hours = today.getHours();
+    var num = hours%6;
+    if (num>=24) { num = 4; }
+    wallpaper.set('assets/wallpaper' + num + '.jpg');
 
     // client software requires to be registered
     if (is_registered_x) {
