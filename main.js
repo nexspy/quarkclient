@@ -72,7 +72,7 @@ autoUpdater.on('update-not-available', (info) => {
 // download progress
 autoUpdater.on('download-progress', (progressObj) => {
   let log_message = "Download speed: " + progressObj.bytesPerSecond;
-  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' - Downloaded ' + Math.ceil(progressObj.percent) + '%';
   log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
 
   log.info(log_message);

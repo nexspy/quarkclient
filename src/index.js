@@ -70,9 +70,6 @@ ipcRenderer.on('updateAvailable', function(event, text) {
 
     // changes the text of the button
     btn_update.text('update found!');
-
-    // block shutting down
-    store.set('app_status', 'updating');
 });
 
 // wait for an noUpdateAvailable message
@@ -83,6 +80,11 @@ ipcRenderer.on('noUpdateAvailable', function(event, text) {
 
 // update download progress
 ipcRenderer.on('update_progress', function(event, message) {
+    // block shutting down
+    if (stt == 'normal') {
+        store.set('app_status', 'updating');
+        stt = 'updating';
+    }
     // var width = $("#progress-update").width();
     // var percentage = parseInt(percentage);
     // var new_width = (percentage/100) * width;
@@ -101,6 +103,10 @@ ipcRenderer.on('updateDownloaded', function(event, text) {
 // update now
 btn_update_now.click(function(e) {
     e.preventDefault();
+
+    // set to normal
+    store.set('app_status', 'normal');
+    stt = 'normal';
 
     ipcRenderer.send('quitAndInstall');
     $(this).hide();
@@ -598,14 +604,13 @@ function startup() {
     // change background image
     // $('body').css('background', 'url(https://picsum.photos/id/1031/300/140) 50% 50% #16191e no-repeat');
 
-    // start timer that shuts down computer after 30 seconds
-    setTimeout(function(){ 
-        // stt = store.get('app_status');
-        // if (stt !== 'updating') {
+    // start timer that shuts down computer after 45 seconds
+    setInterval(function(){
+        stt = store.get('app_status');
+        if (stt !== 'updating') {
             shutdown.shutdown();
-        // }
+        }
     }, 45*1000);
-
 
     var appVersion = require('electron').remote.app.getVersion();
     $('.appversion').text('version ' + appVersion);
