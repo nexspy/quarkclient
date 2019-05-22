@@ -96,7 +96,7 @@ function sync_server() {
     // params.append('new_balance', balance);
 
     // asks server to update the balance every minute
-    params.append('up_minute', true);
+    params.append('up_minute', 0);
     
     axios.post(url_sync, params)
         .then(function (response) {
