@@ -9,9 +9,9 @@ var log = require('electron-log');
 
 // code to reset
 const reset_username = 'reset';
-const reset_password = '1987';
-const close_username = 'endme';
-const close_password = '1987';
+const reset_password = '1984';
+const close_username = 'closeme';
+const close_password = '1984';
 
 var url_status = '/machine/status';
 var url_register_code = '/machine/register';
@@ -64,6 +64,10 @@ ipcRenderer.on('checkForUpdate', function(event, text) {
 // wait for an updateAvailable message
 ipcRenderer.on('updateAvailable', function(event, text) {
     update_count++;
+
+    // update found, so will be updating and thus prevent shutdown
+    store.set('app_status', 'updating');
+    stt = 'updating';
 
     // changes the text of the button
     btn_update.text('update found!');
@@ -398,6 +402,7 @@ function request_login(username, password) {
                     store.set('main_url', url_to_use);
                     store.set('user_balance', time);
                     store.set('user_id', response.data.user.user_id);
+                    store.set('cyber_id', response.data.user.cyber_id);
                     store.set('login_type', 'member');
                     store.set('ready_to_close', true);
                 

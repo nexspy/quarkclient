@@ -23,6 +23,7 @@ var sync_interval = 10 * 1000;
 
 
 var url_logout = url_main + '/cyber/logout';
+var url_refresh_balance = url_main + '/cyber/balance/refresh';
 var url_sync = url_main + '/cyber/sync/client';
 // const url_sync = url_main + '/cyber/request';
 
@@ -33,22 +34,16 @@ var username_last = store.get('username');
 var balance = store.get('user_balance'); // time in minutes
 var login_type = store.get('login_type');
 var btn_logout = $("#btn-logout");
+var btn_refresh = $('#btn-refresh');
 var msg_area = $("#message");
 var warning_shown = false;
-
+var in_refresh = false;
 
 // time reserved in seconds
 var reserved_time = balance*60; 
 var start_time= +new Date();
 var balance_remain = reserved_time;
 var stop_sync = false;
-
-// dev testing variable values ----------------------
-// registration_code = 'U_G__0LJyyU51iZHuHztpQ';
-// login_type = 'paid'; // its either 'free' or 'paid', free will have incremental timer, other will have decreasing timer
-// balance = 5;
-// reserved_time = balance*60;
-// balance_remain = reserved_time;
 
 
 
@@ -63,6 +58,13 @@ btn_logout.click(function(e) {
 
     // remove username when User logs out
     request_logout(me);
+});
+
+
+btn_refresh.click(function(e) {
+    e.preventDefault();
+
+    request_refresh_balance();
 });
 
 
@@ -130,6 +132,45 @@ function sync_server() {
                     request_logout(false);
                 }
             }
+        })
+        .catch(function (error) {
+            console.log(error);
+            console.log('something went wrong');
+        });
+}
+
+/**
+ * Fetch current user balance from server
+ */
+function request_refresh_balance() {
+    log.info('fetch balance update from server');
+
+    if (in_refresh) {
+        return;
+    }
+    in_refresh = true;
+
+    var params = new URLSearchParams();
+    params.append('registration_code', registration_code);
+    params.append('cyber_id', cyber_id);
+    params.append('user_id', user_id);
+
+    axios.post(url_refresh_balance, params)
+        .then(function (response) {
+            console.log(response.data);
+            
+            if (response.data.success) {
+                // reset balance
+                balance = parseInt(response.data.current_balance);
+                store.set('user_balance', balance);
+                
+                // update calculation variables
+                reserved_time = balance*60;
+            } else {
+                // do nothing
+            }
+
+            in_refresh = false;
         })
         .catch(function (error) {
             console.log(error);
@@ -228,55 +269,70 @@ function display_time(result) {
     $(".username span").text( username_last );
 }
 
-
 /**
- * Update the timer according to "balance" variable
+ * Update timer every seconds
  */
 function update_timer() {
-    var elapsed = +new Date() - start_time;
-    var seconds_passed = reserved_time - Math.floor(elapsed/1000);
-
-    if (login_type == 'nonmember') {
-        elapsed = +new Date() - start_time;
-        seconds_passed = Math.floor(elapsed/1000) + reserved_time;
+    var elapsed = +new Date() - start_time; // in seconds
+    var remain_seconds = reserved_time - Math.floor(elapsed/1000);
+    console.log(reserved_time + ', ' + remain_seconds + ', ' + elapsed);
+ 
+    if (remain_seconds <= 0) {
+        console.log('time has ended..');
+        // request_logout();
+        return;
     }
-
-    if (seconds_passed <= 0) {
-        request_logout();
-    }
-
+ 
     // show popup
-    if (seconds_passed <= (5*60 - 10) && !warning_shown && login_type == 'member') {
+    if (remain_seconds <= (5*60 - 10) && !warning_shown && login_type == 'member') {
         console.log('show warning');
-        show_warning();
+        // show_warning();
+        warning_shown = true;
     }
-
-    var hours = Math.floor(seconds_passed / 3600);
+ 
+    // get displayable string
+    var str_display_time = get_display_time(remain_seconds);
+ 
+    $(".timer").text( str_display_time );
+ 
+    // store data
+    // user_time.time = balance*60 - remain_seconds;
+    // store.set('last_time_store', user_time);
+ 
+    setTimeout(function(){update_timer()}, 1000);
+ }
+ 
+ /**
+ * Get string display for timer
+ * @param {int} remain_seconds
+ */
+ function get_display_time(remain_seconds) {
+    var hours = Math.floor(remain_seconds / 3600);
     var hours_val = hours;
     if (hours < 10) {
         hours = '0' + hours;
     }
-    seconds_passed %= 3600;
-    var minutes = Math.floor(seconds_passed / 60);
+    remain_seconds %= 3600;
+    var minutes = Math.floor(remain_seconds / 60);
     var minutes_val = minutes;
     if (minutes < 10) {
         minutes = '0' + minutes;
     }
-    seconds_passed = seconds_passed - (minutes*60);
-    if (seconds_passed < 10) {
-        seconds_passed = '0' + seconds_passed;
+    remain_seconds = remain_seconds - (minutes*60);
+    if (remain_seconds < 10) {
+        remain_seconds = '0' + remain_seconds;
     }
-    
-    var elapsed_time = hours + ':' + minutes + ':' + seconds_passed;
-
+ 
     // update remaining time
-    balance_remain = hours_val*60 + minutes_val;
-    // balance_remain = hours * 60 + minutes;
-
-    $(".timer").text( elapsed_time );
-
-    setTimeout(function(){update_timer()}, 1000);
-}
+    update_balance_remain(hours_val*60 + minutes_val);
+   
+    return  hours + ':' + minutes + ':' + remain_seconds;
+ }
+ 
+ function update_balance_remain(num) {
+    balance_remain = num;
+ }
+ 
 
 /**
  * Show popup AD
@@ -346,14 +402,6 @@ function show_warning() {
     win.show();
 }
 
-// sets the application always on top no matter what
-function set_alwaysonTop() {
-    setInterval(function(){
-      if (win) {
-        win.setAlwaysOnTop(true);
-      }
-    }, 1);
-  }
 
 // Get monitor/window dimensions
 function getWidowDimensions() {
@@ -369,14 +417,17 @@ function getWidowDimensions() {
 function startup() {
     $("#balance").html('initial balance : ' + balance);
 
-    // update_timer();
+    // start minus countdown
+    update_timer();
+    // show username
+    $(".username span").text( username_last );
+    // show start time
+    var today = new Date();
+    $(".login-time").text('Start Time: ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds());
 
     // send sync message to server
-    // if (login_type == 'member') {
-        sync_server();
-        var timeout = setInterval(sync_server, sync_interval);
-    // }
-
+    // sync_server();
+    
     // show AD
     show_ad();
 
