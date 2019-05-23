@@ -49,6 +49,7 @@ var stop_register_btn = false;
 var nightmode = store.get('nightmode');
 // use this flag to see for application being updated.
 var stt = 'normal';
+store.set('app_status', 'normal');
 var update_count = 0;
 
 
