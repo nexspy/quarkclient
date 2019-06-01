@@ -549,6 +549,7 @@ function post_install(mac) {
 
             } else {
                 $("#registration-message").html("Wrong Registration Code");
+                $('#debugarea').html(JSON.stringify({'res': response.data, 'mac': mac }));
             }
             
             btn_install.prop('disabled', false);

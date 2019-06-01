@@ -69,8 +69,6 @@ function init_slider() {
  * Get the main url (domain) to use
  */
 function get_main_url() {
-    // new update uses the base key for url
-    app_basekey = store.get("app_basekey", "");
-
-    return 'http://' + app_basekey;
+    // static website
+    return 'http://quark.modificationdharan.com';
 }
