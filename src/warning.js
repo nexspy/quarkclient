@@ -8,7 +8,7 @@ const remote = electron.remote
 
 var time = 0;
 
-
+var bg_color = 'red';
 
 start();
 
@@ -28,7 +28,15 @@ function playSound() {
 function update_timer() {
     time++;
 
-    if (time <= 10) {
+    if (bg_color == 'red') {
+        bg_color = 'blue';
+    } else {
+        bg_color = 'red';
+    }
+    $('#low-balance').css('background-color', bg_color);
+
+    // close automatically after 1 minute
+    if (time <= 60) {
         playSound();
     } else {
         var window = remote.getCurrentWindow();

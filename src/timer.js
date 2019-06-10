@@ -24,7 +24,7 @@ var sync_interval = 10 * 1000;
 
 var url_logout = url_main + '/cyber/logout';
 var url_refresh_balance = url_main + '/cyber/balance/refresh';
-var url_sync = url_main + '/cyber/sync/client';
+// var url_sync = url_main + '/cyber/sync/client';
 // const url_sync = url_main + '/cyber/request';
 
 var registration_code = store.get('registration_code');
@@ -66,78 +66,6 @@ btn_refresh.click(function(e) {
 
     request_refresh_balance();
 });
-
-
-/**
- * Send Sync Request : check if machine has to be turned off
- * 
- * This request updates the 'last_sync' timestamp. Server constantly checks if last_sync is too old.
- * If last_sync is too old, and machine is still turned ON, then software was closed inproperly.
- */
-function sync_server() {
-    if (stop_sync) {
-        return;
-    }
-    
-    console.log("server request----");
-
-    var params = new URLSearchParams();
-    params.append('registration_code', registration_code);
-    var action = 'sync';
-
-    // member time should be updated as it elapses
-    if (login_type == 'member') {
-        // update the time
-        action = 'update_member_time';
-    }
-
-    params.append('action', action);
-
-    // DEPRECATED : member balance should also be updated
-    // var balance = balance_remain;
-    // params.append('new_balance', balance);
-
-    // asks server to update the balance every minute
-    params.append('up_minute', 0);
-    
-    axios.post(url_sync, params)
-        .then(function (response) {
-            var result = response.data;
-            if (result.success) {
-                // 
-                if (result.reset) {
-                    balance = parseInt(result.reset_balance);
-                    reserved_time = balance*60; 
-                }
-            }
-            
-            // update timer according to fetched remaining time
-            display_time(result);
-            
-            // show warning
-            if (result.remaining <= 5*60 && !warning_shown) {
-                show_warning();
-            }
-
-            // time to turn off
-            if (result.remaining <= 0) {
-                log.info('time has run out');
-                request_logout(false);
-            }
-            
-            // non-member should be automatically logged out
-            if (0 && login_type == 'nonmember') {
-                // computer turned-off has no transaction
-                if (!result.machine.transaction) {
-                    request_logout(false);
-                }
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-            console.log('something went wrong');
-        });
-}
 
 /**
  * Fetch current user balance from server
@@ -250,7 +178,7 @@ function shutdownComputer() {
     stop_sync = true;
 
     log.info('shutdown');
-    shutdown.shutdown();
+    // shutdown.shutdown();
 
     return;
 }
@@ -276,22 +204,28 @@ function update_timer() {
     var elapsed = +new Date() - start_time; // in seconds
     var remain_seconds = reserved_time - Math.floor(elapsed/1000);
     console.log(reserved_time + ', ' + remain_seconds + ', ' + elapsed);
+    var time_overextended = (remain_seconds <= (-30*60)) ? true : false; // allows to extend up to 30 minute
+    var time_finished = (remain_seconds <= 0) ? true : false;
  
-    if (remain_seconds <= 0) {
-        console.log('time has ended..');
-        // request_logout();
-        return;
-    }
- 
-    // show popup
-    if (remain_seconds <= (5*60 - 10) && !warning_shown && login_type == 'member') {
+    // show popup when time is less than 5 minutes
+    if (remain_seconds <= (5*60) && !warning_shown) {
         console.log('show warning');
-        // show_warning();
+        show_warning();
         warning_shown = true;
+    }
+
+    // if time goes smaller than 15 minutes, computer is logged out
+    if (time_overextended) {
+        request_logout(btn_logout);
+        return;
     }
  
     // get displayable string
     var str_display_time = get_display_time(remain_seconds);
+    if (time_finished) {
+        // display time in extended mode
+        str_display_time = get_reverse_time(remain_seconds);
+    }
  
     $(".timer").text( str_display_time );
  
@@ -300,6 +234,19 @@ function update_timer() {
     // store.set('last_time_store', user_time);
  
     setTimeout(function(){update_timer()}, 1000);
+ }
+
+ /**
+  * Get time extended
+  * 
+  * @param {int} remain_seconds 
+  */
+ function get_reverse_time(remain_seconds) {
+    remain_seconds %= 3600;
+    var minutes = Math.floor(remain_seconds / 60);
+    minutes = Math.abs(minutes);
+    var str = (minutes <= 1) ? 'minute' : 'minutes';
+    return 'Your time has expired and extended by ' + minutes + ' ' + str + '.';
  }
  
  /**
@@ -381,8 +328,10 @@ function show_warning() {
         width: 240,
         height: 150,
         frame: false,
-        x: dimen.width - 240 - margin,
-        y:dimen.height - 150 - margin,
+        // x: dimen.width - 240 - margin,
+        // y:dimen.height - 150 - margin,
+        x: dimen.width/2 - 240/2,
+        y: 0,
         alwaysOnTop: true,
         resizable: false,
         movable: false,
@@ -429,7 +378,7 @@ function startup() {
     // sync_server();
     
     // show AD
-    show_ad();
+    // show_ad();
 
     // set wallpaper
     var today = new Date();

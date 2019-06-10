@@ -48,3 +48,7 @@ html, body {
 .login-time, .username {
     padding: 12px 8px;
 }
+
+#btn-refresh {
+    margin-bottom: 10px;
+}
