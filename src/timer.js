@@ -178,7 +178,7 @@ function shutdownComputer() {
     stop_sync = true;
 
     log.info('shutdown');
-    // shutdown.shutdown();
+    shutdown.shutdown();
 
     return;
 }

@@ -1,5 +1,6 @@
 const electron = require('electron')
 const path = require('path')
+const url = require('url')
 const BrowserWindow = electron.remote.BrowserWindow
 const axios = require('axios')
 const remote = electron.remote
@@ -51,6 +52,11 @@ var nightmode = store.get('nightmode');
 var stt = 'normal';
 store.set('app_status', 'normal');
 var update_count = 0;
+
+// choose to show AD page first
+var show_ad_page_first = false;
+
+let win;
 
 
 // 
@@ -320,6 +326,52 @@ function openTimerWindow() {
     window.close();
 }
 
+/**
+ * Open the ad Page before timer window, it shows time remaining and other
+ */
+function openAdWindow() {
+    var dimen = getWidowDimensions();
+
+    win = new BrowserWindow({
+        width: dimen.width,
+        height: dimen.height,
+        frame: false,
+        x: 0,
+        y: 0,
+        resizable: false,
+        movable: false,
+        minimizable: false,
+        icon: __dirname + '/../logo.ico',
+    })
+    
+    win.loadURL(url.format({
+        pathname: path.join(__dirname, 'ad.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    // prevent closing of window
+    win.on('close', function (event) {
+        console.log('attemp to close');
+        event.preventDefault();
+    });
+
+    // win.webContents.openDevTools()
+
+    win.on('closed', () => {
+        win = null
+    });
+    
+    // win.show()
+    win.setFullScreen(true);
+
+    // always on top
+    win.setAlwaysOnTop(true);
+
+    var main_window = remote.getCurrentWindow();
+    main_window.close();
+}
+
 /** Send Request to open computer */
 function request_access() {
     var url_to_use = get_main_url();
@@ -407,7 +459,12 @@ function request_login(username, password) {
                     store.set('login_type', 'member');
                     store.set('ready_to_close', true);
                 
-                    openTimerWindow();
+                    if (show_ad_page_first) {
+                        openAdWindow();
+                    } else {
+                        openTimerWindow();
+                    }
+                    
                 } else {
                     console.log('insufficient balance');
                     var msg = 'Your balance is low, please contact at the counter desk.';

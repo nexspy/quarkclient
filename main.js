@@ -66,7 +66,9 @@ autoUpdater.on('update-available', (info) => {
 // when update is not available
 autoUpdater.on('update-not-available', (info) => {
   log.info('no update is available');
-  win.webContents.send('noUpdateAvailable');
+  if (win) {
+    win.webContents.send('noUpdateAvailable');
+  }
 });
 
 // download progress
@@ -115,12 +117,9 @@ function createWindow () {
   // and load the index.html of the app.
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'src/index.html'),
-    // pathname: path.join(__dirname, 'src/index.html'),
-    // pathname: path.join(__dirname, 'src/timer.html'),
-    // pathname: path.join(__dirname, 'src/food.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  }));
 
   // prevent closing of window
   win.on('close', function (event) {

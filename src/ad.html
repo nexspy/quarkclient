@@ -7,14 +7,20 @@
         <link rel="stylesheet" href="../assets/css/ad.css">
     </head>
 
-    <body style="text-align:center; background-color: white; background:none;">
+    <body style="text-align:center; background-color: #161a1f; ">
 
-        <div class="wrapper">
-            <div class="loader"></div>
+        <div class="wrapper" style="">
+            <div style="margin: 0px auto;">
+                <h1 style="color: white; font-size: 30px; margin-top: 100px; text-align: center; ">Cloud <span style="font-size: 59px;">9</span> Store</h1>
+            </div>
+        </div>
+
+        <div class="wrapper load" style="margin-top: 100px;">
+            <div class="loader" style="margin: 0px auto;"></div>
         </div>
         
 
-        <div class="flexslider">
+        <div class="flexslider" style="width: 800px; height: 70%; margin: 100px auto; background-color: #161a1f; overflow: hidden; ">
         </div>
         
         <script>
@@ -22,6 +28,18 @@
         </script>
         <script src="../plugins/flexslider/jquery.flexslider.js"></script>
         <script src="ad.js"></script>
+        <script>
+            // Data Persistant
+            const store2 = new Store();
+            store2.set('ad_can_be_closed', false);
+            // prevent closing of window
+            window.addEventListener('beforeunload', function (event) {
+                var test = store2.get('ad_can_be_closed');
+                if (!test) {
+                    event.returnValue = false;
+                }
+            });
+        </script>
 
     </body>
 </html>

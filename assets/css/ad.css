@@ -23,3 +23,8 @@
   width: 450px;
   margin: 0px auto;
 }
+
+.flexslider,
+.wrapper {
+  background-color: #161a1f;
+}

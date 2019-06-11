@@ -1,6 +1,6 @@
 {
   "name": "quarkclient",
-  "version": "0.0.26",
+  "version": "0.0.28",
   "description": "Client Application for cyber management.",
   "main": "main.js",
   "scripts": {
