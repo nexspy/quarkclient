@@ -246,7 +246,7 @@ function update_timer() {
     var minutes = Math.floor(remain_seconds / 60);
     minutes = Math.abs(minutes);
     var str = (minutes <= 1) ? 'minute' : 'minutes';
-    return 'Your time has expired and extended by ' + minutes + ' ' + str + '.';
+    return 'Time expired by ' + minutes + ' ' + str + '.';
  }
  
  /**
