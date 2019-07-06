@@ -78,43 +78,46 @@ function get_main_url() {
  */
 function setup_to_open_timer() {
     setInterval(function() {
-        // make ad page closable
-        store.set('ad_can_be_closed', true);
-
-        const modalPath = path.join('file://', __dirname, 'timer.html')
-        var dimen = getWidowDimensions();
-
-        let win = new BrowserWindow({
-            width: 240,
-            height: dimen.height,
-            frame: false,
-            x: dimen.width - 240,
-            // x:0,
-            y:0,
-            resizable: false,
-            movable: false,
-            minimizable: false,
-            icon: __dirname + '/../logo.ico',
-        })
-        
-        // win.on('close', function() {
-        //     win = null
-        // })
-
-        // prevent closing of window
-        win.on('close', function (event) {
-            event.preventDefault();
-        })
-        win.on('closed', () => {
-            win = null
-        })
-        win.loadURL(modalPath)
-        // win.webContents.openDevTools()
-        win.show()
-
-        var window = remote.getCurrentWindow();
-        window.close();
+        open_timer();
     }, ad_open_time*1000);
+}
+
+/**
+ * Open Timer window
+ */
+function open_timer() {
+    // make ad page closable
+    store.set('ad_can_be_closed', true);
+
+    const modalPath = path.join('file://', __dirname, 'timer.html')
+    var dimen = getWidowDimensions();
+
+    let win = new BrowserWindow({
+        width: 240,
+        height: dimen.height,
+        frame: false,
+        x: dimen.width - 240,
+        // x:0,
+        y:0,
+        resizable: false,
+        movable: false,
+        minimizable: false,
+        icon: __dirname + '/../logo.ico',
+    })
+
+    // prevent closing of window
+    win.on('close', function (event) {
+        event.preventDefault();
+    })
+    win.on('closed', () => {
+        win = null
+    })
+    win.loadURL(modalPath)
+    // win.webContents.openDevTools()
+    win.show()
+
+    var window = remote.getCurrentWindow();
+    window.close();
 }
 
 // Get monitor/window dimensions

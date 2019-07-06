@@ -24,7 +24,7 @@ function playSound() {
     sound.play();
 }
 
-
+// Fix: now the warning is always there, sound removed
 function update_timer() {
     time++;
 
@@ -35,6 +35,7 @@ function update_timer() {
     }
     $('#low-balance').css('background-color', bg_color);
 
+    /*
     // close automatically after 1 minute
     if (time <= 60) {
         playSound();
@@ -42,6 +43,7 @@ function update_timer() {
         var window = remote.getCurrentWindow();
         window.close();
     }
+    */
 
     setTimeout(function(){update_timer()}, 1000);
 }

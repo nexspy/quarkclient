@@ -54,7 +54,7 @@ store.set('app_status', 'normal');
 var update_count = 0;
 
 // choose to show AD page first
-var show_ad_page_first = false;
+var show_ad_page_first = true;
 
 let win;
 

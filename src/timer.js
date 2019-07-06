@@ -21,6 +21,10 @@ var url_main = store.get('main_url', '');
 url_main = 'http://quark.modificationdharan.com';
 var sync_interval = 10 * 1000;
 
+// total mins after which warning box is shown
+var min_warning = 5;
+// minimum mins after which computer will auto shutdown
+var min_auto_shutdown = 30;
 
 var url_logout = url_main + '/cyber/logout';
 var url_refresh_balance = url_main + '/cyber/balance/refresh';
@@ -204,11 +208,11 @@ function update_timer() {
     var elapsed = +new Date() - start_time; // in seconds
     var remain_seconds = reserved_time - Math.floor(elapsed/1000);
     console.log(reserved_time + ', ' + remain_seconds + ', ' + elapsed);
-    var time_overextended = (remain_seconds <= (-30*60)) ? true : false; // allows to extend up to 30 minute
+    var time_overextended = (remain_seconds <= (-min_auto_shutdown*60)) ? true : false; // allows to extend up to 30 minute
     var time_finished = (remain_seconds <= 0) ? true : false;
  
-    // show popup when time is less than 5 minutes
-    if (remain_seconds <= (5*60) && !warning_shown) {
+    // show warning popup when time is less than given minutes
+    if (remain_seconds <= (min_warning*60) && !warning_shown) {
         console.log('show warning');
         show_warning();
         warning_shown = true;
@@ -325,12 +329,12 @@ function show_warning() {
     var margin = 50;
 
     let win = new BrowserWindow({
-        width: 240,
-        height: 150,
+        width: 600,
+        height: 100,
         frame: false,
         // x: dimen.width - 240 - margin,
         // y:dimen.height - 150 - margin,
-        x: dimen.width/2 - 240/2,
+        x: dimen.width/2 - 600/2,
         y: 0,
         alwaysOnTop: true,
         resizable: false,
