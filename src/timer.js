@@ -18,7 +18,7 @@ const store = new Store();
 
 // main url is fetched from main window
 var url_main = store.get('main_url', '');
-url_main = 'http://quark.modificationdharan.com';
+url_main = 'https://quark.cloud9gaminghub.com';
 var sync_interval = 10 * 1000;
 
 // total mins after which warning box is shown

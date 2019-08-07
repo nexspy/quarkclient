@@ -11,7 +11,7 @@ var log = require('electron-log');
 // code to reset
 const reset_username = 'reset';
 const reset_password = '1984';
-const close_username = 'closeme';
+const close_username = 'removeme';
 const close_password = '1984';
 
 var url_status = '/machine/status';
@@ -259,7 +259,7 @@ function getStatus() {
 function get_main_url() {
 
     // static website
-    return 'http://quark.modificationdharan.com';
+    return 'https://quark.cloud9gaminghub.com';
 
     // new update uses the base key for url
     app_basekey = store.get("app_basekey", "");
