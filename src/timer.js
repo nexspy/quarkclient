@@ -22,9 +22,9 @@ url_main = 'https://quark.cloud9gaminghub.com';
 var sync_interval = 10 * 1000;
 
 // total mins after which warning box is shown
-var min_warning = 5;
+var min_warning = 10;
 // minimum mins after which computer will auto shutdown
-var min_auto_shutdown = 30;
+var min_auto_shutdown = 0; // prev was 30 minutes
 
 var url_logout = url_main + '/cyber/logout';
 var url_refresh_balance = url_main + '/cyber/balance/refresh';

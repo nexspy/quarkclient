@@ -112,6 +112,9 @@ ipcRenderer.on('updateDownloaded', function(event, text) {
 btn_update_now.click(function(e) {
     e.preventDefault();
 
+    // do nothing
+    return;
+
     // set to normal
     store.set('app_status', 'normal');
     stt = 'normal';
