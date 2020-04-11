@@ -1,5 +1,6 @@
 const electron = require('electron')
 const path = require('path')
+const url = require('url')
 const BrowserWindow = electron.remote.BrowserWindow
 const axios = require('axios')
 const remote = electron.remote
@@ -7,6 +8,7 @@ const wallpaper = require('wallpaper');
 var fs = require('fs');
 var request = require('request');
 const shutdown = require('electron-shutdown-command');
+const isDev = require('electron-is-dev');
 var log = require('electron-log');
 
 // ipc that sends message to main.js
@@ -39,9 +41,9 @@ var balance = store.get('user_balance'); // time in minutes
 var login_type = store.get('login_type');
 var btn_logout = $("#btn-logout");
 var btn_refresh = $('#btn-refresh');
+var is_refreshing = false;
 var msg_area = $("#message");
 var warning_shown = false;
-var in_refresh = false;
 
 // time reserved in seconds
 var reserved_time = balance*60; 
@@ -50,10 +52,7 @@ var balance_remain = reserved_time;
 var stop_sync = false;
 
 
-
 startup();
-
-
 
 
 btn_logout.click(function(e) {
@@ -61,137 +60,27 @@ btn_logout.click(function(e) {
     var me = $(this);
 
     // remove username when User logs out
-    request_logout(me);
+    api_logout(me);
 });
-
 
 btn_refresh.click(function(e) {
     e.preventDefault();
 
-    request_refresh_balance();
-});
-
-/**
- * Fetch current user balance from server
- */
-function request_refresh_balance() {
-    log.info('fetch balance update from server');
-
-    if (in_refresh) {
+    // prevent double fetching
+    if (is_refreshing) {
         return;
     }
-    in_refresh = true;
+    is_refreshing = true;
 
-    var params = new URLSearchParams();
-    params.append('registration_code', registration_code);
-    params.append('cyber_id', cyber_id);
-    params.append('user_id', user_id);
-
-    axios.post(url_refresh_balance, params)
-        .then(function (response) {
-            console.log(response.data);
-            
-            if (response.data.success) {
-                // reset balance
-                balance = parseInt(response.data.current_balance);
-                store.set('user_balance', balance);
-                
-                // update calculation variables
-                reserved_time = balance*60;
-            } else {
-                // do nothing
-            }
-
-            in_refresh = false;
-        })
-        .catch(function (error) {
-            console.log(error);
-            console.log('something went wrong');
-        });
-}
-
-/**
- * Logout user and shutdown, all user related data is reset
- */
-function request_logout(button) {
-    log.info('logging out...');
-
-    if (button) {
-        button.prop('disabled', true);
-    }
-    
-    var params = new URLSearchParams();
-    params.append('registration_code', registration_code);
-    params.append('cyber_id', cyber_id);
-
-    if (button) {
-        if (user_id > 0) {
-            params.append('op', 'user_logout');
-            params.append('user_id', user_id);
-            params.append('balance', balance_remain);
-        } else {
-            // normal logout
-            params.append('op', 'normal_logout');
-        }
-    } else {
-        params.append('op', 'computer_logout');
-    }
-
-    
-    axios.post(url_logout, params)
-        .then(function (response) {
-            console.log(response.data);
-            if (response.data.success) {
-                // reset balance
-                balance = 0;
-                store.set('user_balance', balance);
-               
-                store.delete('login_type');
-                store.delete('username');
-                store.delete('user_balance');
-                store.delete('user_id');
-                store.delete('ready_to_close');
-                shutdownComputer();
-            } else {
-                store.delete('username');
-                store.delete('user_balance');
-                store.delete('user_id');
-                store.delete('ready_to_close');
-                shutdownComputer();
-                console.log('something went wrong');
-            }
-            
-        })
-        .catch(function (error) {
-            console.log(error);
-            console.log('something went wrong');
-        });
-
-    
-}
-
-/**
- * Open the main lockscreen window
- */
-function shutdownComputer() {
-    
-    store.delete('ready_to_close');
-
-    log.info('computer will now shutdown...');
-
-    stop_sync = true;
-
-    log.info('shutdown');
-    shutdown.shutdown();
-
-    return;
-}
+    $(this).html('refreshing...').prop('disabled', true);
+    // update user time
+    api_refresh_user_time();
+});
 
 /**
  * Show the time left fetched from server
  */
 function display_time(result) {
-    console.log(result);
     var elapsed_time_str = result.elapsed_time_str;
     
     $(".timer").text( elapsed_time_str );
@@ -214,13 +103,28 @@ function update_timer() {
     // show warning popup when time is less than given minutes
     if (remain_seconds <= (min_warning*60) && !warning_shown) {
         console.log('show warning');
-        show_warning();
+        
+        // show warning popup
+        var dimen = getWidowDimensions();
+        var win_info = {
+            'width' : 600,
+            'height' : 100,
+            'x' : dimen.width/2 - 600/2,
+            'filepath' : 'warning.html',
+            'canClose' : true,
+            'showDev' : false,
+            'isFullscreen' : false,
+            'isAlwaysOnTop' : true,
+            'closeParent' : false
+        };
+        open_window(win_info);
+
         warning_shown = true;
     }
 
     // if time goes smaller than 15 minutes, computer is logged out
     if (time_overextended) {
-        request_logout(btn_logout);
+        api_logout(btn_logout);
         return;
     }
  
@@ -232,10 +136,6 @@ function update_timer() {
     }
  
     $(".timer").text( str_display_time );
- 
-    // store data
-    // user_time.time = balance*60 - remain_seconds;
-    // store.set('last_time_store', user_time);
  
     setTimeout(function(){update_timer()}, 1000);
  }
@@ -278,90 +178,11 @@ function update_timer() {
     update_balance_remain(hours_val*60 + minutes_val);
    
     return  hours + ':' + minutes + ':' + remain_seconds;
- }
- 
- function update_balance_remain(num) {
+}
+
+// update balance
+function update_balance_remain(num) {
     balance_remain = num;
- }
- 
-
-/**
- * Show popup AD
- */
-function show_ad() {
-    const modalPath = path.join('file://', __dirname, 'ad.html')
-    var dimen = getWidowDimensions();
-    var margin = 50;
-
-    let win = new BrowserWindow({
-        width: 720,
-        height: 550,
-        frame: false,
-        x: dimen.width/2 - 720/2,
-        y:dimen.height/2 - 550/2,
-        alwaysOnTop: false,
-        resizable: false,
-        movable: false,
-        minimizable: false,
-        icon: __dirname + '/logo.ico',
-    });
-    
-    // prevent closing of window
-    win.on('close', function (event) {
-        event.preventDefault();
-    })
-    win.on('closed', () => {
-        win = null
-    })
-    win.loadURL(modalPath)
-    // win.webContents.openDevTools()
-    win.show();
-}
-
-/**
- * Show popup window
- */
-function show_warning() {
-    log.info('show warning...');
-    warning_shown = true;
-    const modalPath = path.join('file://', __dirname, 'warning.html')
-    var dimen = getWidowDimensions();
-    var margin = 50;
-
-    let win = new BrowserWindow({
-        width: 600,
-        height: 100,
-        frame: false,
-        // x: dimen.width - 240 - margin,
-        // y:dimen.height - 150 - margin,
-        x: dimen.width/2 - 600/2,
-        y: 0,
-        alwaysOnTop: true,
-        resizable: false,
-        movable: false,
-        minimizable: false,
-        icon: __dirname + '/logo.ico',
-    })
-    
-    // prevent closing of window
-    win.on('close', function (event) {
-        event.preventDefault();
-    })
-    win.on('closed', () => {
-        win = null
-    })
-    win.loadURL(modalPath)
-    // win.webContents.openDevTools()
-    win.show();
-}
-
-
-// Get monitor/window dimensions
-function getWidowDimensions() {
-    var screenElectron = require('electron').screen;
-    var mainScreen = screenElectron.getPrimaryDisplay();
-    var dimensions = mainScreen.size;
-    return dimensions;
 }
 
 /**
@@ -377,13 +198,7 @@ function startup() {
     // show start time
     var today = new Date();
     $(".login-time").text('Start Time: ' + today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds());
-
-    // send sync message to server
-    // sync_server();
     
-    // show AD
-    // show_ad();
-
     // set wallpaper
     var today = new Date();
     var hours = today.getHours();

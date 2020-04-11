@@ -8,6 +8,7 @@ const mymac = require('getmac')
 // var basepath = app.getAppPath();
 var basepath = path.dirname (app.getPath ('exe'));
 var AutoLaunch = require('auto-launch')
+const isDev = require('electron-is-dev');
 
 // var mainScreen = screenElectron.getPrimaryDisplay();
 // var dimensions = mainScreen.size;
@@ -123,8 +124,8 @@ function createWindow () {
 
   // prevent closing of window
   win.on('close', function (event) {
-    ready_to_close = store.get('ready_to_close');    
-    if (!ready_to_close) {
+    ready_to_close = store.get('ready_to_close');
+    if (!ready_to_close && isDev == false) {
       event.preventDefault();
     }
   })
@@ -145,7 +146,7 @@ function createWindow () {
   start_auto_launch();
 
   // check for update
-  autoUpdater.checkForUpdates();
+  // autoUpdater.checkForUpdates();
 }
 
 

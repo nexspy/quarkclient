@@ -9,7 +9,7 @@
       
     <div class="row">
 
-      <div id="update-container">
+      <div id="update-container" style="display: none;">
         <div class="appversion">...</div>
         <div class="btn-update-app">...</div>
         <button class="btn" id="btn-update-now" style="display: none;">Update Now</button>
@@ -17,30 +17,8 @@
       
       <div class="registration form-box" style="display: none;">
         <div class="form-item">
-          <button id="startapp" class="btn">Install</button>
+          <button id="startapp" class="btn">Auto Install</button>
         </div>
-        <div class="form-item">
-          <div id="debugarea" style="font-size: 12px;">id</div>
-        </div>
-        <div style="display: none;">
-          <div class="form-item">
-            Enter Base Key
-          </div>
-          <div class="form-item">
-            <label for="">http://</label>
-            <input type="text" id="txt_basekey" placeholder="BaseKey">
-          </div>
-          <div class="form-item">
-            Enter your 16 digit registration code
-          </div>
-          <div class="form-item">
-            <input type="text" id="txt_code" placeholder="XXXXXXXXXXXXXXXX">
-          </div>
-          <div class="form-item">
-            <button id="register" class="btn">Register</button>
-          </div>
-        </div>
-        <div id="registration-message"></div>
       </div>
 
       <div class="login-form form-box">
@@ -82,6 +60,11 @@
     <script>
       window.$ = window.jQuery = require("../plugins/jquery/jquery-3.2.1.js");
     </script>
+    <script src="./settings.js"></script>
+    <script src="./utility/form.js"></script>
+    <script src="./utility/views.js"></script>
+    <script src="./utility/api.js"></script>
+    <script src="./utility/user.js"></script>
     <script src="index.js"></script>
   </body>
 </html>
