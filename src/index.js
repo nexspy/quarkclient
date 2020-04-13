@@ -59,6 +59,11 @@ var show_ad_page_first = false;
 
 let win;
 
+
+// store.set("app_activities", []);
+var daaa = get_offline_data();
+console.log(daaa);
+
 // 
 startup();
 
@@ -146,6 +151,7 @@ function handle_user_login() {
 
     // check username and password are entered
     if (!validate_user_info(info)) {
+        save_activity('login', 'empty username and password was entered : ' + info.username + ', ' + info.password);
         return;
     }
 
@@ -157,14 +163,15 @@ function handle_user_login() {
 
     // check for resetting of software
     if (validate_reset(info)) {
+        save_activity('reset', 'software was reset');
         reset();
         startup();
     } if (validate_immediate_close(info)) {
+        save_activity('reset', 'software was forced to shutdown immediately');
         ready_to_close = true;
         store.set('ready_to_close', true);
     } else {
         // good to check for user now
-        // request_login(username, password);
         api_user_login(info);
         btn_login.val('logging in....');
     }

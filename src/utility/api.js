@@ -18,6 +18,9 @@ function api_user_login(info) {
 
     var url_to_use = get_main_url();
 
+    // record activity
+    save_activity('login', 'login request was sent for user:' + info.username);
+
     axios.post(url_to_use + url_login, params)
         .then(function (response) {
             // store username
@@ -28,6 +31,8 @@ function api_user_login(info) {
                 var time = response.data.user.balance;
 
                 if (time > 0) {
+                    save_activity('login', 'user: ' + info.username + ' was successfully logged in');
+
                     store.set('main_url', url_to_use);
                     store.set('user_balance', time);
                     store.set('user_id', response.data.user.user_id);
@@ -68,6 +73,8 @@ function api_user_login(info) {
                     }
                     
                 } else {
+                    save_activity('login', 'user: ' + info.username + ' balance was low');
+
                     var msg = 'Your balance is low, please contact at the counter desk.';
                     $("#message").html(msg);
                     stop_request_login = false;
@@ -84,15 +91,19 @@ function api_user_login(info) {
                 stop_request_login = false;
                 btn_login.prop('disabled', false);
                 btn_login.val('Login');
+
+                save_activity('login', 'user: ' + info.username + ' failed to login. Error: ' + msg);
             }
             
         })
         .catch(function (error) {
             console.log(error);
 
-            var msg = 'username or password was wrong 22';
+            var msg = 'username or password was wrong';
             $("#message").html(msg);
             btn_login.val('Login').prop('disabled', false);
+
+            save_activity('login', 'user: ' + info.username + ' failed to login. Error: ' + msg);
         });
 }
 
@@ -101,6 +112,8 @@ function api_user_login(info) {
  */
 function api_logout(button) {
     log.info('logging out...');
+
+    save_activity('logout', 'user: ' + user_id + ' has requested to log out.');
 
     if (button) {
         button.prop('disabled', true);
@@ -136,6 +149,9 @@ function api_logout(button) {
                 store.delete('user_balance');
                 store.delete('user_id');
                 store.delete('ready_to_close');
+
+                save_activity('logout', 'user: ' + user_id + ' has successfully logged out.');
+
                 shutdownComputer();
             } else {
                 store.delete('username');
