@@ -1,0 +1,83 @@
+
+
+/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+.flip-card {
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+.flip-card img {
+  width: 100%;
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flip-card.is-hovered .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color: dodgerblue;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+/**
+ * Table : data table styling
+ */
+.list-table td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.list-table tr:nth-child(even){background-color: #f2f2f2;}
+
+.list-table tr:hover {background-color: #ddd;}
+
+.list-table th {
+    padding: 12px 0px 12px 10px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info,
+.dataTables_paginate {
+  margin: 10px 0px;
+}
+.paginate_button,
+.dataTables_wrapper a.previous,
+.dataTables_wrapper a.next {
+  padding-right: 10px;
+}
+
+.dataTables_wrapper .dataTables_filter label {
+  padding: 0px 10px;
+}

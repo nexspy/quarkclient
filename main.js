@@ -10,9 +10,6 @@ var basepath = path.dirname (app.getPath ('exe'));
 var AutoLaunch = require('auto-launch')
 const isDev = require('electron-is-dev');
 
-// var mainScreen = screenElectron.getPrimaryDisplay();
-// var dimensions = mainScreen.size;
-
 // this should be placed at top of main.js to handle setup events quickly
 if (handleSquirrelEvent(app)) {
   // squirrel event handled and app will exit in 1000ms, so don't do anything else
@@ -33,6 +30,11 @@ store.delete('ready_to_close');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
+
+//
+// Detect which software to run, either server or the client software
+//
+var is_server = false;
 
 
 mymac.getMac(function(err, macAddress){
@@ -149,6 +151,48 @@ function createWindow () {
   // autoUpdater.checkForUpdates();
 }
 
+/**
+ * Page : for managing
+ */
+function createWindowManager() {
+  var dimen = getWidowDimensions();
+  var xpos = dimen.width/2 - (800/2) - 100;
+  
+  // Create the browser window.
+  win = new BrowserWindow({
+    width: 1024,
+    height: 650,
+    frame: false,
+    x: xpos,
+    y: 50,
+    resizable: true,
+    movable: true,
+    minimizable: true,
+    fullscreen: false,
+    transparent: false,
+    backgroundColor: '#16191e',
+    icon: __dirname + '/logo.ico',
+  });
+  
+  console.log('x:' + xpos);
+
+  // and load the index.html of the app.
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'src/manager.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+
+  
+  // Open the DevTools.
+  win.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  win.on('closed', () => {
+    win = null
+  });
+}
+
 
 // Add application to auto launch program
 function start_auto_launch() {
@@ -178,7 +222,13 @@ function start_auto_launch() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function() {
-  createWindow();
+  if (is_server) {
+    // open manager software
+    createWindowManager();
+  } else {
+    // open client software
+    createWindow();
+  }
 })
 
 // Quit when all windows are closed.

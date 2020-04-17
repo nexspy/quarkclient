@@ -9,7 +9,7 @@
  */
 function api_user_login(info) {
     var pass = false;
-    var registration_code = store.get('registration_code');
+    var registration_code = store.get('registration_code', 'none');
 
     var params = new URLSearchParams();
     params.append('uname', info.username);
@@ -64,7 +64,7 @@ function api_user_login(info) {
                             'x' : dimen.width - 240,
                             'filepath' : 'timer.html',
                             'canClose' : false,
-                            'showDev' : true,
+                            'showDev' : false,
                             'isFullscreen' : false,
                             'isAlwaysOnTop' : false,
                             'closeParent' : true,

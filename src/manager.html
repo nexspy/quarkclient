@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Timer</title>
+    <link rel="stylesheet" href="../assets/css/manager.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+  </head>
+  <body class="page-manager">
+
+    <div class="container">
+        <div class="wrapper">
+            <!-- Time -->
+            <div id="current-time">
+            </div>
+
+            <!-- Close button -->
+            <div id="close-area">
+                <a href="#" id="btn-close">close</a>
+            </div>
+
+            <!-- Menu -->
+            <div class="left">
+                <ul class="routes">
+                    <li>
+                        <a href="#" page="home">
+                            <img />Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" page="computers">
+                            <img />Computers
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" page="transactions">
+                            <img />Transactions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" page="people">
+                            <img />People
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Pages -->
+            <div class="right">
+                <div class="content">
+
+                    <!-- Page : home -->
+                    <div class="page" id="page-home">
+                        <h1>Home</h1>
+                        <div class="form">
+                            <div>
+                                <input type="text" placeholder="username" id="txt-username" />
+                            </div>
+                            <div>
+                                <input type="password" placeholder="password" id="txt-password">
+                            </div>
+                            <div>
+                                <button id="btn-login" class="btn">login</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page : computers -->
+                    <div class="page" id="page-computers">
+                        <h1>Computers</h1>
+                        <div class="computers">
+                            ....
+                        </div>
+                    </div>
+
+                    <!-- Page : transactions -->
+                    <div class="page" id="page-transactions">
+                        <h1>Transactions</h1>
+                        <div class="transactions">
+                            <div class="result-area">
+                                ...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page : people -->
+                    <div class="page" id="page-people">
+                        <h1>People</h1>
+                        <div class="people">
+                            <div>
+                                <input type="text" placeholder="search" id="txt-search">
+                            </div>
+                            <div class="result-area">
+                                start typing to search for account
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="wrapper">
+            aa
+        </div>
+    </div>
+
+    <div class="loader">
+        <div class="wrapper">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                  <div class="flip-card-front">
+                    <img src="../assets/images/logo.png" alt="Avatar">
+                  </div>
+                  <div class="flip-card-back">
+                    <img src="../assets/images/logo.png" alt="Avatar">
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+
+    <script>
+        window.$ = window.jQuery = require("../plugins/jquery/jquery-3.2.1.js");
+    </script>
+    <script src="../plugins/moment.js"></script>
+    <script src="./settings.js"></script>
+    <script src="./utility/form.js"></script>
+    <script src="./utility/views.js"></script>
+    <script src="./utility/api.js"></script>
+    <script src="./utility/user.js"></script>
+    <script src="./utility/offline.js"></script>
+    <script src="./components/managment.js"></script>
+    <script src="manager.js"></script>
+  </body>
+</html>
