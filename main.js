@@ -34,7 +34,7 @@ let win;
 //
 // Detect which software to run, either server or the client software
 //
-var is_server = false;
+var is_server = true;
 
 
 mymac.getMac(function(err, macAddress){

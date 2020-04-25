@@ -64,7 +64,7 @@ function api_user_login(info) {
                             'x' : dimen.width - 240,
                             'filepath' : 'timer.html',
                             'canClose' : false,
-                            'showDev' : false,
+                            'showDev' : true,
                             'isFullscreen' : false,
                             'isAlwaysOnTop' : false,
                             'closeParent' : true,
@@ -104,6 +104,32 @@ function api_user_login(info) {
             btn_login.val('Login').prop('disabled', false);
 
             save_activity('login', 'user: ' + info.username + ' failed to login. Error: ' + msg);
+        });
+}
+
+/**
+ * POST : check server login
+ * 
+ * @param {object} info 
+ * @param {function} callback 
+ */
+function api_server_login(info, callback) {
+    var params = new URLSearchParams();
+    params.append('uname', info.username);
+    params.append('pcode', info.password);
+    params.append('registration_code', 'mobile');
+
+    var url_to_use = get_main_url();
+    
+    axios.post(url_to_use + url_server_login, params)
+        .then(function (response) {
+            var data = response.data;
+
+            // handle response
+            callback(data);
+        })
+        .catch(function (error) {
+            // handle error
         });
 }
 
@@ -297,5 +323,94 @@ function api_check_status() {
         })
         .catch(function (error) {
             console.log(error);
+        });
+}
+
+/**
+ * POST : transactions for given cyber, user_token is necessary for validation
+ * @param {object} info
+ * @param {function} callback
+ */
+function api_get_transactions(info, callback) {
+    var params = new URLSearchParams();
+    params.append('token', info.token);
+    params.append('cyber_id', info.cyber_id);
+    params.append('pin', info.pin);
+    params.append('uid', info.uid);
+    if (typeof info.date !== "undefined") {
+        params.append('date', info.date);
+    }
+
+    var url_to_use = get_main_url();
+    
+    axios.post(url_to_use + url_get_transactions, params)
+        .then(function (response) {
+            var data = response.data;
+
+            // handle response
+            callback(data);
+        })
+        .catch(function (error) {
+            // handle error
+        });
+}
+
+
+/**
+ * POST : computers status at current moment
+ * @param {object} info 
+ * @param {function} callback 
+ */
+function api_get_computers(info, callback) {
+    var params = new URLSearchParams();
+    params.append('token', info.token);
+    params.append('cyber_id', info.cyber_id);
+    params.append('pin', info.pin);
+    params.append('uid', info.uid);
+
+    var url_to_use = get_main_url();
+    
+    axios.post(url_to_use + url_get_computers, params)
+        .then(function (response) {
+            var data = response.data;
+
+            // handle response
+            callback(data);
+        })
+        .catch(function (error) {
+            // handle error
+        });
+}
+
+/**
+ * POST : stop a computer
+ * 
+ * @param {object} info 
+ * @param {function} callback 
+ */
+function api_stop_computer(info, callback) {
+    
+    var params = new URLSearchParams();
+    params.append('cyber_id', info.cyber_id);
+    params.append('pin', info.pin);
+    params.append('uid', info.uid);
+    params.append('idx', info.id);
+    params.append('status', info.status);
+    params.append('note', info.note);
+    params.append('op', info.op);
+    params.append('payment', info.payment);
+    params.append('time', info.time);
+
+    var url_to_use = get_main_url();
+    
+    axios.post(url_to_use + url_stop_computer, params)
+        .then(function (response) {
+            var data = response.data;
+
+            // handle response
+            callback(data);
+        })
+        .catch(function (error) {
+            // handle error
         });
 }

@@ -10,6 +10,11 @@
 
     <div class="container">
         <div class="wrapper">
+
+            <!-- Current Software Version -->
+            <div id="current-version">
+            </div>
+
             <!-- Time -->
             <div id="current-time">
             </div>
@@ -52,7 +57,7 @@
                     <!-- Page : home -->
                     <div class="page" id="page-home">
                         <h1>Home</h1>
-                        <div class="form">
+                        <div class="form form-login">
                             <div>
                                 <input type="text" placeholder="username" id="txt-username" />
                             </div>
@@ -63,22 +68,33 @@
                                 <button id="btn-login" class="btn">login</button>
                             </div>
                         </div>
+                        <!-- User is logged in -->
+                        <div class="form-server">
+                            <h2>Welcone, <span>Username</span></h2>
+                            <div class="your-pin">PIN : <span>0</span></div>
+                            <button id="btn-logout">Logout</button>
+                        </div>
                     </div>
 
                     <!-- Page : computers -->
                     <div class="page" id="page-computers">
                         <h1>Computers</h1>
                         <div class="computers">
-                            ....
+                            loading computers...
                         </div>
                     </div>
 
                     <!-- Page : transactions -->
                     <div class="page" id="page-transactions">
                         <h1>Transactions</h1>
+                        <div class="search">
+                            <input type="text" id="txt-trans-search" placeholder="Date">
+                            <button id="btn-search-trans">Search</button>
+                            <p>Filter the result by date. Example: 2020-01-01</p>
+                        </div>
                         <div class="transactions">
                             <div class="result-area">
-                                ...
+                                loading transactions...
                             </div>
                         </div>
                     </div>
@@ -89,6 +105,9 @@
                         <div class="people">
                             <div>
                                 <input type="text" placeholder="search" id="txt-search">
+                            </div>
+                            <div>
+                                <p>Currently logged in accounts.</p>
                             </div>
                             <div class="result-area">
                                 start typing to search for account

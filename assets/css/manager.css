@@ -38,6 +38,12 @@ a {
     right: 100px;
     font-size: 12px;
 }
+#current-version {
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    font-size: 12px;
+}
 
 .btn {
     background-color: #90caf9;
@@ -83,6 +89,7 @@ ul li a:hover {
 
 .right {
     float: left;
+    width: 82%;
 }
 
 input,
@@ -122,6 +129,17 @@ button {
 }
 
 /**
+ * Login
+ */
+.form {
+    width: 250px;
+}
+.form input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/**
  * Computers
  */
 .computers {
@@ -131,6 +149,11 @@ button {
 .computers .computer {
     padding: 10px;
     text-align: center;
+    cursor: pointer;
+    border: 1px solid black;
+}
+.computers .computer:hover {
+    border-color: white;
 }
 .computers .computer.computer-0 {
     color: gray;
@@ -141,6 +164,13 @@ button {
 }
 .computers .computer .computer-img img {
     width: 100%;
+}
+
+/**
+ * Transactions
+ */
+ #txt-trans-search {
+    text-align: left;
 }
 
 /**

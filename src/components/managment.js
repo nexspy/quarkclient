@@ -12,9 +12,15 @@
 function render_computer(info) {
     var html = '';
 
-    html += '<div class="computer computer-' + info.status + '" uid="' + info.uid + '">';
-    if (info.status) {
-        if (info.timeleft <= 10) {
+    var timeleft = 0;
+    if (info.status == "occupied") {
+        timeleft = parseInt(info.actual_balance) - info.duration;
+    }
+
+    // uid: user id, cid: computer
+    html += '<div class="computer computer-' + info.status + '" uid="' + info.id + '" cid="' + info.id + '" status="' + info.status + '">';
+    if (info.status != "free") {
+        if (timeleft <= 10) {
             img = "../assets/images/pc-member-low.png";
         } else {
             img = "../assets/images/pc-member.png";
@@ -24,8 +30,15 @@ function render_computer(info) {
         img = "../assets/images/pc-off.png";
     }
     html += '  <div class="computer-img"><img src="' + img + '" /></div>';
-    html += '  <div>' + info.user + '</div>';
-    html += '  <div>' + info.timeleft + ' mins left</div>';
+
+    // name of machine
+    html += '<div>' + info.name + '</div>';
+
+    if (info.status == "occupied") {
+        html += '  <div>' + info.user_fullname + '</div>';
+        html += '  <div>' + timeleft + ' mins left</div>';
+    }
+    
     html += '</div>';
 
     return html;
@@ -38,7 +51,11 @@ function render_computer(info) {
 function render_table(data) {
     var html = '';
 
-    html += '<table>';
+    if (data.length <= 0) {
+        return 'no transactions found.';
+    }
+
+    html += '<table class="list-table">';
     html += '<thead>';
     html += '  <tr>';
     html += '    <th>Type</th>';
@@ -75,7 +92,7 @@ function render_transaction(data) {
     html += '</div>';
     html += '</td>';
     html += '<td>' + data.message + '</td>';
-    html += '<td>' + data.user + '</td>';
+    html += '<td>' + data.username + '</td>';
     html += '<td db-id="0">' + data.time + '</td>';
     html += '</tr>'
 
@@ -88,8 +105,12 @@ function render_transaction(data) {
  */
 function render_people_table(data) {
     var html = '';
+    
+    if (data.length <= 0) {
+        return 'no people found.';
+    }
 
-    html += '<table>';
+    html += '<table class="list-table">';
     html += '<thead>';
     html += '  <tr>';
     html += '    <th>Username</th>';

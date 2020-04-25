@@ -15,12 +15,6 @@ const reset_password = '1984';
 const close_username = 'removeme';
 const close_password = '1984';
 
-var url_status = '/machine/status';
-var url_register_code = '/machine/register';
-var url_server_mac = '/machine/install';
-var url_login = '/cyber/authenitcate';
-var url_access = '/cyber/request';
-
 // Data Persistant
 const Store = require('electron-store');
 const store = new Store();

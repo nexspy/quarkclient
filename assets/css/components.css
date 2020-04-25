@@ -51,14 +51,17 @@
 /**
  * Table : data table styling
  */
+.list-table {
+  width: 100%;
+}
 .list-table td, #customers th {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-.list-table tr:nth-child(even){background-color: #f2f2f2;}
+.list-table tr:nth-child(even){background-color: #353535;}
 
-.list-table tr:hover {background-color: #ddd;}
+/* .list-table tr:hover {background-color: #ddd;} */
 
 .list-table th {
     padding: 12px 0px 12px 10px;
@@ -80,4 +83,44 @@
 
 .dataTables_wrapper .dataTables_filter label {
   padding: 0px 10px;
+}
+
+.activity-type {
+  width: 10px;
+  height: 10px;
+  background-color: #546e7a;
+  text-indent: -9999px; 
+}
+.activity-type.type-timestart {
+  background-color: #00e676 ;
+}
+.activity-type.type-timeend {
+  background-color: #4db6ac ;
+}
+.activity-type.type-moved {
+  background-color: #ffa726;
+}
+.activity-type.type-note {
+  background-color: #a1887f;
+}
+.activity-type.type-payment {
+  background-color: red;
+}
+.activity-type.type-balanceadded {
+  background-color: #40c4ff  ;
+}
+.activity-type.type-balanceremoved {
+  background-color: #9575cd ;
+}
+
+
+
+.form-server {
+  display: none;
+}
+.form-server .your-pin {
+  display: none;
+}
+.form-server button {
+  min-width: 100px;
 }
