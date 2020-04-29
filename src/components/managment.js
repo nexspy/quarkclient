@@ -104,6 +104,7 @@ function render_transaction(data) {
  * @param {object} data 
  */
 function render_people_table(data) {
+    console.log(data)
     var html = '';
     
     if (data.length <= 0) {
@@ -140,16 +141,16 @@ function render_people_table(data) {
 function render_people(data) {
     var html = '';
 
-    html += '<tr role="row" class="odd">';
+    html += '<tr role="row" class="odd people" uid="' + data.uid + '">';
     html += '<td>';
     html += '<div>';
-    html += data.username;
+    html += data.name;
     html += '</div>';
     html += '</td>';
     html += '<td>' + data.fullname + '</td>';
     html += '<td>' + data.balance + '</td>';
-    html += '<td db-id="0">' + data.lastlogin + '</td>';
-    html += '</tr>'
+    html += '<td db-id="0">' + 1 + '</td>';
+    html += '</tr>';
 
     return html;
 }

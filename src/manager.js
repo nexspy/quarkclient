@@ -14,7 +14,7 @@ const Store = require('electron-store');
 const store = new Store();
 
 // starting page to display
-var starting_page = "computers";
+var starting_page = "people";
 var current_page = starting_page;
 // global user
 var user = store.get("global_user", false);
@@ -29,6 +29,8 @@ var btn_logout = $("#btn-logout")
 var menu_links = $("ul.routes li a")
 var btn_close = $("#close-area a");
 var btn_search_trans = $("#btn-search-trans");
+var btn_search_people = $("#btn-search-people");
+var txt_search_people = $("#txt-search-people");
 
 start();
 
@@ -121,6 +123,29 @@ btn_search_trans.click(function(e) {
     api_get_transactions(info, handle_transactions_response);
 });
 
+btn_search_people.click(function(e) {
+    e.preventDefault();
+
+    var search_text = txt_search_people.val();
+
+    var info = {
+        'token': 'dssadfasfasdfdsafds',
+        'text' : search_text
+    };
+
+    if (search_text.length <= 2) {
+        alert('you must enter word longer than 2 letters');
+        return;
+    }
+
+    info = add_uesr_creds(info);
+
+    show_loader();
+
+    // fetch transactions
+    api_search_people(info, handle_people_search_response);
+});
+
 /**
  * Events : 
  * 
@@ -159,6 +184,14 @@ $(".computers").delegate(".computer", "click", function(e) {
     }
 });
 
+$("#page-people .result-area").delegate(".people", "click", function(e) {
+
+    // remove active from all
+    $("#page-people .result-area tr.active td").removeClass("active");
+    // add active to this
+    $(this).addClass("active");
+});
+
 /**
  * Add user credentials before api call
  * 
@@ -179,6 +212,7 @@ function show_loader() {
     $(".loader").show();
     setTimeout(function() { hide_loader(); }, 2000);
 }
+
 function hide_loader() {
     $(".loader").hide();
 }
@@ -328,4 +362,13 @@ function handle_computers_response(data) {
  * @param {object} data 
  */
 function handle_stop_computer_response(data) {
+}
+
+/**
+ * Handle response from api after search yields result
+ * @param {object} data 
+ */
+function handle_people_search_response(data) {
+    var html = render_people_table(data.members);
+    $("#page-people .result-area").html(html);
 }

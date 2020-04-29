@@ -182,6 +182,48 @@ button {
 .result-area {
     font-size: 12px;
 }
+.search-filter {
+    width: 100%;
+    clear: both;
+}
+
+.search-filter input,
+.search-filter button {
+    float: left;
+    min-width: 100px;
+    margin-right: 5px;
+    border: 0px;
+}
+.filters {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+.filters .form-item {
+    float: left;
+    margin-right: 5px;
+}
+.filters .form-item button {
+    float: left;
+    min-width: 100px;
+    border: 0px;
+    margin-right: 5px;
+    cursor: pointer;
+    color: black;
+}
+.filters .form-item button:disabled {
+    color: gray;
+}
+.filters .form-item button.red {
+    background-color: #f06292;
+}
+.filters .form-item button.blue {
+    background-color: #4fc3f7;
+}
+
+#page-people .result-area tr.active td {
+    border-color: red;
+}
 
 
 /**

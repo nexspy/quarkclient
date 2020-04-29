@@ -103,11 +103,19 @@
                     <div class="page" id="page-people">
                         <h1>People</h1>
                         <div class="people">
-                            <div>
-                                <input type="text" placeholder="search" id="txt-search">
+                            <div class="search-filter">
+                                <input type="text" placeholder="search" id="txt-search-people" name="txt-search-people">
+                                <button id="btn-search-people">Search</button>
                             </div>
-                            <div>
-                                <p>Currently logged in accounts.</p>
+                            <div class="filters">
+                                <div class="form-item">
+                                    <label for="txt-people-time">Time</label>
+                                    <input type="text" id="txt-people-time" name="txt-people-time" placeholder="0">
+                                </div>
+                                <div class="form-item actions">
+                                    <button id="btn-time-add" class="blue">Add</button>
+                                    <button id="btn-time-remove" class="red">Remove</button>
+                                </div>
                             </div>
                             <div class="result-area">
                                 start typing to search for account

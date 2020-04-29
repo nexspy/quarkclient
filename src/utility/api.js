@@ -414,3 +414,30 @@ function api_stop_computer(info, callback) {
             // handle error
         });
 }
+
+/**
+ * POST : search for members
+ * 
+ * @param {object} info 
+ * @param {function} callback 
+ */
+function api_search_people(info, callback) {
+    var params = new URLSearchParams();
+    params.append('cyber_id', info.cyber_id);
+    params.append('pin', info.pin);
+    params.append('uid', info.uid);
+    params.append('text', info.text);
+
+    var url_to_use = get_main_url();
+    
+    axios.post(url_to_use + url_search_member, params)
+        .then(function (response) {
+            var data = response.data;
+
+            // handle response
+            callback(data);
+        })
+        .catch(function (error) {
+            // handle error
+        });
+}

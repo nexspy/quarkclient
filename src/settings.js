@@ -15,6 +15,8 @@ var url_get_transactions = api_version + '/cyber/transactions/post';
 var url_get_computers = api_version + '/cyber/computers/post';
 // stop computer
 var url_stop_computer = api_version + '/cyber/computers/stop';
+// search member
+var url_search_member = api_version + '/cyber/member/search';
 
 /**
  * Get the main url (domain) to use
