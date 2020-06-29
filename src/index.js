@@ -49,7 +49,7 @@ store.set('app_status', 'normal');
 var update_count = 0;
 
 // choose to show AD page first
-var show_ad_page_first = false;
+var show_ad_page_first = true;
 
 let win;
 
@@ -180,6 +180,8 @@ function startup() {
     if (is_registered_x) {
         $(".form-box").hide();
         $(".login-form").show();
+        // show login 
+        $("#form-wrapper").show();
     } else {
         $(".registration").show();
     }
@@ -203,6 +205,13 @@ function startup() {
 
     var appVersion = require('electron').remote.app.getVersion();
     $('.appversion').text('version ' + appVersion);
+
+
+    
+    setTimeout(function() {
+        var vid = document.getElementById("home-video");
+        vid.play();
+    }, 1000);
 }
 
 // reset

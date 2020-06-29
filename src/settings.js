@@ -2,11 +2,11 @@
  * All settings and global variables
  */
 var api_version = '/api/v1';
-var url_status = '/machine/status';
-var url_register_code = '/machine/register';
-var url_server_mac = '/machine/install';
-var url_login = '/cyber/authenitcate';
-var url_access = '/cyber/request';
+var url_status = '/?q=machine/status';
+var url_register_code = '/?q=machine/register';
+var url_server_mac = '/?q=machine/install';
+var url_login = '/?q=cyber/authenitcate';
+var url_access = '/?q=cyber/request';
 // user login check for server login
 var url_server_login = api_version + '/cyber/authenticate';
 // fetch list of transactions for given cyber
@@ -24,5 +24,6 @@ var url_search_member = api_version + '/cyber/member/search';
 function get_main_url() {
     // static website
     return 'http://localhost/quark';
-    return 'https://quark.cloud9gaminghub.com';
+    // return 'https://quark.cloud9gaminghub.com';
+    // return 'http://cloud9quark-env.eba-itzikvx2.us-east-2.elasticbeanstalk.com';
 }

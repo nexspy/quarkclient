@@ -9,7 +9,7 @@ body {
 body, a {
     height: 100%;
     overflow:hidden;
-    background: url('../images/wallpaper.jpg');
+    /* background: url('../images/wallpaper.jpg'); */
     object-fit: fill;
 
     color: white;
@@ -18,20 +18,32 @@ body, a {
 body {
     overflow-y: hidden ! important;
     overflow-x: hidden ! important;
-    background-color: #16191e;
+    background-color: black; /* #16191e */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
 }
 
+#my-video {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100vh;
+}
+
+
+.registration.form-box,
+.login-form.form-box {
+    position: fixed;
+}
 div.form-box input {
     padding: 10px;
     clear: both;
-    
 }
 div.form-box input[type=text],
 div.form-box input[type=password] {
-    border: 2px solid red;
+    /* border: 2px solid red; */
 }
 div.form-box input.btn.night-btn {
     background-color: #d27400;
@@ -60,8 +72,15 @@ div.form-box .form-item {
 .form-part {
     margin-bottom: 40px;
 }
+.form-part p {
+    margin: 0px;
+    margin-bottom: 10px;
+}
 
-
+div.form-box input.btn {
+    margin-top: 2px;
+    width: 100%;
+}
 
 
 

@@ -138,7 +138,7 @@ function createWindow () {
   // Emitted when the window is closed.
   win.on('closed', () => {
     win = null
-  })
+  });
 
   // keep our application always on top
   set_alwaysonTop();
